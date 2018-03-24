@@ -19,4 +19,61 @@
 
 ## Rooms
 
+* Kitchen
+
+* Bedroom
+
+* Bathroom
+
+* Dining Room
+
+* Social Room
+
+* Flex space
+
+* Work room
+
+* Hallway
+
+## Passages
+
+* Standard door
+
+* Door hole without door
+
+* Arched opening
+
+* Double doors
+
+* French doors
+
+* Folding closet door
+
+* sliding closet door
+
+## Barriers
+
+* solid wall
+
+* half wall
+
+* wall with window (bay window)
+
+* wall with frosted window
+
+## Architectural Decorations
+
+* square windows
+
+* floor-to-ceiling windows
+
+* baseboards
+
+* crown molding
+
+* brick wall
+
+* fireplace
+
+
 
