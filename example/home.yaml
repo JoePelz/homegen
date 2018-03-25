@@ -1,0 +1,21 @@
+---
+home:
+  rooms:
+    - name: Main Hallway
+      template: hallway
+    - name: Side Hallway
+      template: hallway
+    - name: Closet1
+      template: closet
+    - name: Closet2
+      template: closet
+    - name: Bathroom
+      template: flex
+    - name: Kitchen
+      template: flex
+    - name: Flex
+      template: flex
+    - name: Bedroom
+      template: flex
+    - name: Patio
+      template: flex

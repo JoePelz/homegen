@@ -95,7 +95,7 @@ Example:
 ### Idea! 
 Create a Domain Specific Language, like in a yaml file, that lets 
 1. you specify 
-    * rooms: give them names, number/range of occurrences, constraints like size/shape
+    * rooms: names, occurrences (number/range), constraints (size/shape) 
     * specify any other constraints, like overall square footage
     * version 2: define styles as well (colors, materials, molding)
 2. Then in the app you load that definition file, and click "Generate"

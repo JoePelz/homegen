@@ -1,8 +1,8 @@
 from operator import itemgetter
-from app.Constraints import BaseConstraint
+from app.constraints import base_constraint
 
 
-class MinSize (BaseConstraint):
+class MinSize (base_constraint):
     pass
 
     # def valid
