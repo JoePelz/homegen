@@ -75,21 +75,21 @@ to start with a graph?
 What about the graph edges and vertices both being things?
 
 ```
-example:
-+ Door (key-locking, metal, external)
-  + Hallway
-    + Hallway2
-      + folding double door
-        - closet
-      + folding double door
-        - closet
-      + standard door
-        - bathroom
-    - Kitchen
-    - Flex space
-    + bedroom
-      + sliding door (locking, glass, external)
-        - patio
+Example:
+- Door (key-locking, metal, external)
+ \- Hallway
+  |-- Hallway2
+  | |-- Folding double door
+  | |  \- Closet
+  | |-- Folding double door
+  | |  \- Closet
+  |  \- Standard door
+  |    \- Bathroom
+  |-- Kitchen
+  |-- Flex space
+   \- Bedroom
+     \- Sliding door (locking, glass, external)
+       \- Patio
 ```
 
 ### Models
