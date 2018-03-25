@@ -92,6 +92,21 @@ Example:
        \- Patio
 ```
 
+### Idea! 
+Create a Domain Specific Language, like in a yaml file, that lets 
+1. you specify 
+    * rooms: give them names, number/range of occurrences, constraints like size/shape
+    * specify any other constraints, like overall square footage
+    * version 2: define styles as well (colors, materials, molding)
+2. Then in the app you load that definition file, and click "Generate"
+    * `Generate` builds a graph of flow
+    * then builds placeholder rooms with independent constraints satisfied
+    * determines dependant constraints like shared walls
+    * attempts iteratively to resolve all constraints
+        * should weight the room's constraint's importances? hard/soft constraints?
+    * render to svg
+3. The app returns or saves the svg file. 
+
 ### Models
 * House
     * is a collection of polygons
