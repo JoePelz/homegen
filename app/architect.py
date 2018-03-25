@@ -1,4 +1,4 @@
-from app.metaroom import Metaroom
+from app.meta_room import MetaRoom
 
 
 class Architect:
@@ -17,7 +17,7 @@ class Architect:
             name = room.get('template', 'Room')
             min_count = room.get('min_count', 1)
             max_count = room.get('max_count', 1)
-            mr = Metaroom(template, name, min_count, max_count)
+            mr = MetaRoom(template, name, min_count, max_count)
             rooms.append(mr)
 
         self.requirements = {

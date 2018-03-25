@@ -1,1 +1,2 @@
-class BaseConstraint: pass
+class BaseConstraint:
+    pass

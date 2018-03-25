@@ -14,6 +14,5 @@ def test_run():
     arch.blueprints_from_models()
 
 
-
 if __name__ == '__main__':
     test_run()
