@@ -1,32 +1,36 @@
-from app.meta_room import MetaRoom
+from app.requirements import Requirements
 from app.meta_wall import MetaWall
 import random
 
 
-class Node:
+class Graph:
     def __init__(self):
         self.parent = None
         self.children = []
         self.contents = None
+        self.model = None
 
-    def __str__(self):
-        return self.contents.name if self.contents else "empty"
+    def __str__(self) -> str:
+        if self.model:
+            return str(self.model)
+        elif self.contents:
+            return self.contents.name
+        else:
+            return 'empty'
 
-
-class Grapher:
     @staticmethod
-    def list_all_rooms(requirements):
+    def list_all_rooms(requirements: Requirements) -> list:
         all_rooms = []
-        for req in requirements:
+        for req in requirements.rooms:
             for i in range(1, random.randint(req.min_count, req.max_count) + 1):
                 all_rooms.append(req.dup())
         return all_rooms
 
     @staticmethod
-    def pick_node_to_grow(nodelist):
+    def pick_node_to_grow(nodelist: list) -> 'Graph':
         size = len(nodelist)
         choice = None
-        while choice == None:
+        while choice is None:
             suggestion = nodelist[random.randint(0, size - 1)]
             # do not pick walls that already open into rooms
             if isinstance(suggestion.contents, MetaWall) and len(suggestion.children) > 0:
@@ -35,10 +39,10 @@ class Grapher:
         return choice
 
     @staticmethod
-    def attach_room_to_node(room, node, nodelist):
-        wall_node = Node()
+    def attach_room_to_node(room, node: 'Graph', nodelist: list) -> None:
+        wall_node = Graph()
         wall_node.contents = MetaWall("base_wall", "{} Door".format(room.name), is_door=True)
-        room_node = Node()
+        room_node = Graph()
         room_node.contents = room
 
         room_node.parent = wall_node
@@ -50,31 +54,31 @@ class Grapher:
         nodelist.append(room_node)
 
     @staticmethod
-    def draw_tree(root, indent=0):
+    def draw_tree(root: 'Graph', indent: int=0) -> None:
         print("{prefix}{node}".format(
             prefix=indent*"-",
             node=root,
             parent=root.parent
         ))
         for child in root.children:
-            Grapher.draw_tree(child, indent+1)
+            Graph.draw_tree(child, indent+1)
 
     @staticmethod
-    def make_root():
+    def make_root() -> 'Graph':
         entrance = MetaWall("base_wall", "Entrance", True)
-        root = Node()
+        root = Graph()
         root.contents = entrance
         return root
 
     @staticmethod
-    def build_graph(requirements):
-        rooms = Grapher.list_all_rooms(requirements)
+    def build_graph(requirements: Requirements) -> 'Graph':
+        rooms = Graph.list_all_rooms(requirements)
         random.shuffle(rooms)
-        root = Grapher.make_root()
+        root = Graph.make_root()
         nodes = [root]
 
         for room in rooms:
-            attachment_point = Grapher.pick_node_to_grow(nodes)
-            Grapher.attach_room_to_node(room, attachment_point, nodes)
+            attachment_point = Graph.pick_node_to_grow(nodes)
+            Graph.attach_room_to_node(room, attachment_point, nodes)
 
         return root

@@ -1,18 +1,15 @@
-import os
 from app.architect import Architect
-import yaml
 
 
 def test_run():
-    with open("../example/home.yaml") as f:
-        raw_data = f.read()
-    data = yaml.load(raw_data)
+    example_path = "../example/home.yaml"
 
     arch = Architect()
-    arch.load_requirements(data)
-    arch.graph_from_requirements()
-    arch.models_from_graph()
-    arch.blueprints_from_models()
+    requirements = arch.load_requirements(example_path)
+    graph = arch.graph_from_requirements(requirements)
+    models = arch.models_from_graph(requirements, graph)
+    outpath = arch.blueprints_from_models(models)
+    print("Out: {}".format(outpath))
 
 
 if __name__ == '__main__':
