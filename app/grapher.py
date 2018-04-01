@@ -54,14 +54,18 @@ class Graph:
         nodelist.append(room_node)
 
     @staticmethod
-    def draw_tree(root: 'Graph', indent: int=0) -> None:
-        print("{prefix}{node}".format(
-            prefix=indent*"-",
-            node=root,
-            parent=root.parent
-        ))
-        for child in root.children:
-            Graph.draw_tree(child, indent+1)
+    def draw_tree(root: 'Graph', indent: int=0, doors: bool=False) -> None:
+        if isinstance(root.contents, MetaWall) and not doors:
+            for child in root.children:
+                Graph.draw_tree(child, indent)
+        else:
+            print("{prefix}{node}".format(
+                prefix=indent*"-",
+                node=root,
+                parent=root.parent
+            ))
+            for child in root.children:
+                Graph.draw_tree(child, indent+1)
 
     @staticmethod
     def make_root() -> 'Graph':
