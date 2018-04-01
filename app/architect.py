@@ -1,5 +1,4 @@
-from app.meta_room import MetaRoom
-from app.grapher import Graph
+from app.graph import Graph
 from app.requirements import Requirements
 from app.requirements_importer import RequirementsImporter
 
