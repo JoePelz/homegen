@@ -49,13 +49,6 @@ class Architect:
         :return: List of rooms and walls with finalized size/shape/position
         """
         print("\n=== Modeling ===\n")
-        # Tasks:
-        # - Create a list of room objects from the meta_room objects
-        # - Create a list of constraints that bind the room objects
-        # - Iteratively solve the constraints??
-        # - Wrap entire house with exterior walls
-        # Output:
-        # - List of rooms and walls with finalized size/shape/position
         print("\n=== Done ===\n")
 
         return []

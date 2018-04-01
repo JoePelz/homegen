@@ -1,7 +1,7 @@
 from app.rooms.base_room import BaseRoom
 
 
-class Door(BaseRoom):
+class Doorway(BaseRoom):
     MIN_WIDTH = 43
     MIN_DEPTH = 5
 

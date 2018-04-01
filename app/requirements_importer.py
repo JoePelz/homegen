@@ -41,10 +41,10 @@ class RequirementsImporter:
 
         yaml_rooms = root['home']['rooms']
         for room in yaml_rooms:
-            template = room.get('template', 'BaseRoom')
+            template = room.get('template', 'BaseRoom').lower
             name = room.get('name', 'Room')
-            min_count = room.get('min_count', 1)
-            max_count = room.get('max_count', 1)
+            min_count = int(room.get('min_count', 1))
+            max_count = int(room.get('max_count', 1))
             mr = MetaRoom(template, name, min_count, max_count)
             requirements.add_room(mr)
 
