@@ -1,14 +1,20 @@
-from app.requirements import Requirements
-from app.meta_wall import MetaWall
+from typing import List
 import random
+from app.requirements import Requirements
+from app.meta_room import MetaRoom
+from app.meta_wall import MetaWall
+from app.rooms.base_room import BaseRoom
 
 
 class Graph:
     def __init__(self):
-        self.parent = None
-        self.children = []
-        self.contents = None
-        self.model = None
+        """
+        set up some instance variables.
+        """
+        self.parent = None  # type: Graph
+        self.children = []  # type: List(Graph)
+        self.contents = None  # type: MetaRoom or MetaWall
+        self.model = None  # type: BaseRoom
 
     def __str__(self) -> str:
         if self.model:
@@ -19,7 +25,12 @@ class Graph:
             return 'empty'
 
     @staticmethod
-    def list_all_rooms(requirements: Requirements) -> list:
+    def list_all_rooms(requirements: Requirements) -> List[MetaRoom ]:
+        """
+
+        :param requirements:
+        :return:
+        """
         all_rooms = []
         for req in requirements.rooms:
             for i in range(1, random.randint(req.min_count, req.max_count) + 1):
@@ -27,7 +38,7 @@ class Graph:
         return all_rooms
 
     @staticmethod
-    def pick_node_to_grow(nodelist: list) -> 'Graph':
+    def pick_node_to_grow(nodelist: List['Graph']) -> 'Graph':
         size = len(nodelist)
         choice = None
         while choice is None:
@@ -39,7 +50,7 @@ class Graph:
         return choice
 
     @staticmethod
-    def attach_room_to_node(room, node: 'Graph', nodelist: list) -> None:
+    def attach_room_to_node(room, node: 'Graph', nodelist: List['Graph']) -> None:
         wall_node = Graph()
         wall_node.contents = MetaWall("base_wall", "{} Door".format(room.name), is_door=True)
         room_node = Graph()
@@ -54,8 +65,8 @@ class Graph:
         nodelist.append(room_node)
 
     @staticmethod
-    def draw_tree(root: 'Graph', indent: int=0, doors: bool=False) -> None:
-        if isinstance(root.contents, MetaWall) and not doors:
+    def draw_tree(root: 'Graph', indent: int=0, draw_doors: bool=False) -> None:
+        if isinstance(root.contents, MetaWall) and draw_doors is False:
             for child in root.children:
                 Graph.draw_tree(child, indent)
         else:
@@ -69,7 +80,7 @@ class Graph:
 
     @staticmethod
     def make_root() -> 'Graph':
-        entrance = MetaWall("base_room", "Entrance", True)
+        entrance = MetaRoom("base_room", "Entrance")
         root = Graph()
         root.contents = entrance
         return root
@@ -79,10 +90,13 @@ class Graph:
         rooms = Graph.list_all_rooms(requirements)
         random.shuffle(rooms)
         root = Graph.make_root()
-        nodes = [root]
+        nodes = []
 
+        # this order and excluding root from nodes prevents additional
+        # rooms from attaching to the Entrance.
+        attachment_point = root
         for room in rooms:
-            attachment_point = Graph.pick_node_to_grow(nodes)
             Graph.attach_room_to_node(room, attachment_point, nodes)
+            attachment_point = Graph.pick_node_to_grow(nodes)
 
         return root

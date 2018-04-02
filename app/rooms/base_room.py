@@ -1,4 +1,6 @@
+from typing import List
 from app.edge import Edge
+
 
 class BaseRoom:
     MIN_WIDTH = 24
@@ -38,14 +40,10 @@ class BaseRoom:
     def get_ranges(self):
         return (self.MIN_WIDTH, self.MAX_WIDTH), (self.MIN_DEPTH, self.MAX_DEPTH)
 
-    def offset(self, x, y):
-        offset_vertices = [(x0+x, y0+y) for x0, y0 in self.vertices]
-        self.vertices = offset_vertices
-
-    def set_box(self, width, height):
+    def set_box(self, width, depth):
         e1 = Edge(-width/2, 0, width/2, 0)
-        e2 = Edge(*e1.end, width/2, height)
-        e3 = Edge(*e2.end, -width/2, height)
+        e2 = Edge(*e1.end, width/2, depth)
+        e3 = Edge(*e2.end, -width/2, depth)
         e4 = Edge(*e3.end, e1.start)
         self.edges = [e1, e2, e3, e4]
 
@@ -53,3 +51,10 @@ class BaseRoom:
         xx, xy = x_axis
         yx, yy = -xy, xx
         self.transform = xx, xy, position[0], yx, yy, position[1]
+
+    def get_origin(self):
+        # origin = tuple(self.__transform[2:6:3])  # same as below
+        return self.__transform[2], self.__transform[5]
+
+    def get_attachment_points(self) -> List[Edge]:
+        return self.edges[1:]

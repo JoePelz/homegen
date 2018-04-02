@@ -1,11 +1,11 @@
 class MetaRoom:
-    def __init__(self, template, name, min_count=1, max_count=1):
+    def __init__(self, template: str, name: str, min_count: int=1, max_count: int=1):
         self.template = template
         self.name = name
         self.min_count = min_count
         self.max_count = max_count
 
-    def  __str__(self):
+    def  __str__(self) -> str:
         desc = '<MetaRoom({template}) "{name}" x{min}..{max}>'.format(
             template=self.template,
             name=self.name,
@@ -14,7 +14,7 @@ class MetaRoom:
         )
         return desc
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         defn = "MetaRoom(template='{template}', name='{name}', min_count={min}, max_count={max})".format(
             template=self.template,
             name=self.name,
@@ -23,7 +23,7 @@ class MetaRoom:
         )
         return defn
 
-    def dup(self):
+    def dup(self) -> 'MetaRoom':
         copy = MetaRoom(
             self.template,
             self.name,

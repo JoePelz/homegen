@@ -1,14 +1,15 @@
-class MetaWall:
-    def __init__(self, template, name=None, is_door=False):
-        self.template = template
-        self.name = name
+from app.meta_room import MetaRoom
+
+
+class MetaWall(MetaRoom):
+    def __init__(self, template: str, name: str=None, is_door: bool=True):
+        super().__init__(template, name, min_count=1, max_count=1)
         self.is_door = is_door
 
         if name is None:
             self.name = "Doorway" if is_door else "Wall"
 
-
-    def  __str__(self):
+    def  __str__(self) -> str:
         desc = '<MetaWall({type}, {template}) "{name}">'.format(
             type="Doorway" if self.is_door else "Wall",
             template=self.template,
@@ -16,7 +17,7 @@ class MetaWall:
         )
         return desc
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         defn = "MetaWall(template='{template}', name='{name}', is_door={door})".format(
             template=self.template,
             name=self.name,
@@ -24,7 +25,7 @@ class MetaWall:
         )
         return defn
 
-    def dup(self):
+    def dup(self) -> 'MetaWall':
         copy = MetaWall(
             template = self.template,
             name = self.name,

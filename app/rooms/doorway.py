@@ -1,9 +1,6 @@
-from app.rooms.base_room import BaseRoom
+from app.rooms.base_wall import BaseWall
 
 
-class Doorway(BaseRoom):
+class Doorway(BaseWall):
     MIN_WIDTH = 43
-    MIN_DEPTH = 5
-
-    # MAX_WIDTH = 60
-    MAX_DEPTH = 9
+    MAX_WIDTH = 43
