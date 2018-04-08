@@ -4,7 +4,7 @@ from app.meta_room import MetaRoom
 class MetaWall(MetaRoom):
     def __init__(self, template: str, name: str=None, is_door: bool=True):
         super().__init__(template, name, min_count=1, max_count=1)
-        self.is_door = is_door
+        self.is_door = is_door  # type: bool
 
         if name is None:
             self.name = "Doorway" if is_door else "Wall"

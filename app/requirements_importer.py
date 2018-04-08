@@ -41,7 +41,7 @@ class RequirementsImporter:
 
         yaml_rooms = root['home']['rooms']
         for room in yaml_rooms:
-            template = room.get('template', 'BaseRoom').lower
+            template = room.get('template', 'BaseRoom').lower()
             name = room.get('name', 'Room')
             min_count = int(room.get('min_count', 1))
             max_count = int(room.get('max_count', 1))

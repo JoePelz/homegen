@@ -9,5 +9,9 @@ class Entrance(BaseWall):
     MAX_WIDTH = 43
     MAX_DEPTH = 43
 
+    def __init__(self):
+        super().__init__()
+        self.template = 'entrance'  # type: str
+
     def get_attachment_points(self) -> List[Edge]:
         return self.edges[2:3]

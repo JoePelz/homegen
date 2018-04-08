@@ -7,3 +7,7 @@ class Hallway (BaseRoom):
 
     MAX_WIDTH = 43
     MAX_DEPTH = 360
+
+    def __init__(self):
+        super().__init__()
+        self.template = 'hallway'  # type: str

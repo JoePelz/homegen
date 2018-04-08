@@ -7,3 +7,7 @@ class Closet(BaseRoom):
 
     MAX_WIDTH = 60
     MAX_DEPTH = 36
+
+    def __init__(self):
+        super().__init__()
+        self.template = 'closet'  # type: str

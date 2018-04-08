@@ -1,10 +1,12 @@
+from typing import List
 from app.graph import Graph
 from app.requirements import Requirements
 from app.requirements_importer import RequirementsImporter
+from app.modeler import Modeler
+from app.rooms import BaseRoom
 
 
 class Architect:
-
     @staticmethod
     def load_requirements(path: str) -> Requirements:
         """
@@ -19,6 +21,7 @@ class Architect:
         print("\n=== Loading ===\n")
 
         requirements = RequirementsImporter.load(path)
+        requirements.room_report()
 
         return requirements
 
@@ -37,11 +40,11 @@ class Architect:
         print("\n=== Graphing ===\n")
         graph = Graph.build_graph(requirements)
 
-        Graph.draw_tree(graph)
+        Graph.draw_tree(graph, draw_doors=False)
         return graph
 
     @staticmethod
-    def models_from_graph(requirements: Requirements, root: Graph) -> list:
+    def models_from_graph(requirements: Requirements, root: Graph) -> List[BaseRoom]:
         """
 
         :param requirements: Requirements object with the constraints to use
@@ -49,9 +52,10 @@ class Architect:
         :return: List of rooms and walls with finalized size/shape/position
         """
         print("\n=== Modeling ===\n")
-        print("\n=== Done ===\n")
-
-        return []
+        models = Modeler.convert_graph(requirements, root)
+        for model in models:
+            print(model.report())
+        return models
 
     @staticmethod
     def blueprints_from_models(rooms: list) -> str:
@@ -61,4 +65,5 @@ class Architect:
         :param rooms:
         :return: path to svg file to view
         """
+        print("\n=== Done ===\n")
         return "/"

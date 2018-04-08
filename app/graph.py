@@ -52,7 +52,7 @@ class Graph:
     @staticmethod
     def attach_room_to_node(room, node: 'Graph', nodelist: List['Graph']) -> None:
         wall_node = Graph()
-        wall_node.contents = MetaWall("base_wall", "{} Door".format(room.name), is_door=True)
+        wall_node.contents = MetaWall("doorway", "{} Door".format(room.name), is_door=True)
         room_node = Graph()
         room_node.contents = room
 
@@ -68,7 +68,7 @@ class Graph:
     def draw_tree(root: 'Graph', indent: int=0, draw_doors: bool=False) -> None:
         if isinstance(root.contents, MetaWall) and draw_doors is False:
             for child in root.children:
-                Graph.draw_tree(child, indent)
+                Graph.draw_tree(child, indent, draw_doors)
         else:
             print("{prefix}{node}".format(
                 prefix=indent*"-",
@@ -76,7 +76,7 @@ class Graph:
                 parent=root.parent
             ))
             for child in root.children:
-                Graph.draw_tree(child, indent+1)
+                Graph.draw_tree(child, indent+1, draw_doors)
 
     @staticmethod
     def make_root() -> 'Graph':

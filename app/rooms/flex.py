@@ -7,3 +7,7 @@ class Flex(BaseRoom):
 
     MAX_WIDTH = 150
     MAX_DEPTH = 150
+
+    def __init__(self):
+        super().__init__()
+        self.template = 'flex'  # type: str

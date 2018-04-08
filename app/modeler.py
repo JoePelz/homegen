@@ -29,25 +29,27 @@ class Modeler:
         # - Wrap entire house with exterior walls
 
         # entrance ("porch"? Not really part of the house)
-        graph.model = BaseRoom()
-        graph.model.set_box(43, 43)
+        graph.model = Modeler.instantiate(graph.contents)
+        Modeler.initialize_room(graph.model, width=43, depth=43)
 
-        # entrance door
-        # door = graph.children[0]
-        # door.model = Doorway()
-        # door.model.set_box(43, Doorway.MIN_DEPTH)
         Modeler.make_rooms(graph.children[0])
 
         all_models = Modeler.list_of_rooms(graph)
         return all_models
 
     @staticmethod
-    def make_rooms(graph: Graph):
+    def initialize_room(room: BaseRoom, width: float, depth: float) -> None:
+        room.set_box(width, depth)
+        room.set_square_inches(width * depth)
+        room.set_ratio(width / depth)
+
+    @staticmethod
+    def make_rooms(graph: Graph) -> None:
         attachment_edge = random.choice(graph.parent.model.get_attachment_points())  # type: Edge
         room = Modeler.instantiate(graph.contents)
         width = random.randint(room.MIN_WIDTH, room.MAX_WIDTH)
         depth = random.randint(room.MIN_DEPTH, room.MAX_DEPTH)
-        room.set_box(width, depth)
+        Modeler.initialize_room(room, width, depth)
 
         x_axis = tuple(map(operator.sub, attachment_edge.end, attachment_edge.start))
 
@@ -65,19 +67,21 @@ class Modeler:
             Modeler.make_rooms(child)
 
     @staticmethod
-    def instantiate(room: MetaRoom):
-        if room.template == 'closet':
-            return Closet()
-        elif room.template == 'flex':
-            return Flex()
-        elif room.template == 'hallway':
-            return Hallway()
-        elif room.template == 'doorway':
-            return Doorway()
-        elif room.template == 'wall':
-            return BaseWall()
+    def instantiate(metaroom: MetaRoom) -> BaseRoom:
+        if metaroom.template == 'closet':
+            room = Closet()
+        elif metaroom.template == 'flex':
+            room = Flex()
+        elif metaroom.template == 'hallway':
+            room = Hallway()
+        elif metaroom.template == 'doorway':
+            room = Doorway()
+        elif metaroom.template == 'wall':
+            room = BaseWall()
         else:
-            return BaseRoom()
+            room = BaseRoom()
+        room.name = metaroom.name
+        return room
 
     @staticmethod
     def list_of_rooms(graph: Graph) -> List[BaseRoom]:

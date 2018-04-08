@@ -1,9 +1,9 @@
 class MetaRoom:
     def __init__(self, template: str, name: str, min_count: int=1, max_count: int=1):
-        self.template = template
-        self.name = name
-        self.min_count = min_count
-        self.max_count = max_count
+        self.template = template  # type: str
+        self.name = name  # type: str
+        self.min_count = min_count  # type: int
+        self.max_count = max_count  # type: int
 
     def  __str__(self) -> str:
         desc = '<MetaRoom({template}) "{name}" x{min}..{max}>'.format(
