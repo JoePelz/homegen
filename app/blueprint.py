@@ -20,8 +20,9 @@ class Blueprint:
         polygon = self.dwg.polygon(points, fill=self.colors[self.color_index % len(self.colors)])
         self.color_index += 1
         print("model: {}".format(model.report()))
-        print("{:6} {:6} {:6}".format(*matrix[:3]))
-        print("{:6} {:6} {:6}".format(*matrix[3:]))
+        print(" X: {:6} {:6}".format(*matrix[0:2]))
+        print(" Y: {:6} {:6}".format(*matrix[2:4]))
+        print(" P: {:6} {:6}".format(*matrix[4:6]))
         polygon.matrix(*matrix)
         self.dwg.add(polygon)
 

@@ -14,4 +14,5 @@ class Entrance(BaseWall):
         self.template = 'entrance'  # type: str
 
     def get_attachment_points(self) -> List[Edge]:
-        return self.edges[2:3]
+        # return self.edges[2:3]
+        return self.edges[1:2]

@@ -42,11 +42,11 @@ class BaseRoom:
         return (self.MIN_WIDTH, self.MAX_WIDTH), (self.MIN_DEPTH, self.MAX_DEPTH)
 
     def set_box(self, width, depth) -> None:
-        e1 = Edge(-width/2, 0, width/2, 0)
-        e2 = Edge(*e1.end, width/2, depth)
-        e3 = Edge(*e2.end, -width/2, depth)
-        e4 = Edge(*e3.end, *e1.start)
-        self.edges = [e1, e2, e3, e4]
+        e0 = Edge(-width/2, 0, width/2, 0)
+        e1 = Edge(*e0.end, width/2, depth)
+        e2 = Edge(*e1.end, -width/2, depth)
+        e3 = Edge(*e2.end, *e1.start)
+        self.edges = [e0, e1, e2, e3]
 
     def set_transform(self, x_axis: tuple, position: tuple) -> None:
         xx, xy = x_axis

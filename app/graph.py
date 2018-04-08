@@ -80,7 +80,7 @@ class Graph:
 
     @staticmethod
     def make_root() -> 'Graph':
-        entrance = MetaRoom("base_room", "Entrance")
+        entrance = MetaRoom("entrance", "Entrance")
         root = Graph()
         root.contents = entrance
         return root

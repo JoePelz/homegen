@@ -65,7 +65,7 @@ class Architect:
         """
         print("\n=== Done ===\n")
         blueprint = Blueprint()
-        for model in models[:2]:
+        for model in models[:3]:
             blueprint.add_model(model)
         blueprint.export()
 

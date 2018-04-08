@@ -1,6 +1,6 @@
 import operator
 import random
-from typing import List
+from typing import List, Tuple
 from app.rooms import *
 from app.graph import Graph
 from app.requirements import Requirements
@@ -31,7 +31,7 @@ class Modeler:
         # entrance ("porch"? Not really part of the house)
         graph.model = Modeler.instantiate(graph.contents)
         Modeler.initialize_room(graph.model, width=43, depth=43)
-
+        print("modeling {}".format(graph.model.report()))
         Modeler.make_rooms(graph.children[0])
 
         all_models = Modeler.list_of_rooms(graph)
@@ -59,16 +59,25 @@ class Modeler:
         cx = rel_x * xform[0] + rel_y * xform[3]
         cy = rel_x * xform[1] + rel_y * xform[4]
         center = cx+px, cy+py
+        # room.set_transform(x_axis, center)
 
-        print("edge was {}".format(attachment_edge))
-        print("x_axis was {}".format(x_axis))
-
-        # x_axis = 1, 0
-        room.set_transform(x_axis, center)
+        # TODO: test after calc_xform works
+        room.transform = Modeler.calc_xform(graph.parent.model.transform, attachment_edge)
 
         graph.model = room
         for child in graph.children:
             Modeler.make_rooms(child)
+
+    @staticmethod
+    def calc_xform(parent_xform: Tuple[float, float, float, float, float, float], edge: Edge):
+        rel_x = tuple(map(operator.sub, edge.start, edge.end))
+        rel_y = (-rel_x[1], rel_x[0])
+        rel_p = edge.center
+        rel_xform = (*rel_x, *rel_y, *rel_p)
+        assert len(rel_xform) == len(parent_xform)
+
+        # TODO: return rel_xform * parent_xform
+        return "???"
 
     @staticmethod
     def instantiate(metaroom: MetaRoom) -> BaseRoom:
@@ -82,6 +91,8 @@ class Modeler:
             room = Doorway()
         elif metaroom.template == 'wall':
             room = BaseWall()
+        elif metaroom.template == 'entrance':
+            room = Entrance()
         else:
             room = BaseRoom()
         room.name = metaroom.name
