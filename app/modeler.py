@@ -51,15 +51,19 @@ class Modeler:
         depth = random.randint(room.MIN_DEPTH, room.MAX_DEPTH)
         Modeler.initialize_room(room, width, depth)
 
-        x_axis = tuple(map(operator.sub, attachment_edge.end, attachment_edge.start))
+        x_axis = tuple(map(operator.sub, attachment_edge.start, attachment_edge.end))
 
         xform = graph.parent.model.transform
         px, py = xform[2], xform[5]
         rel_x, rel_y = attachment_edge.center
-        cx = rel_x * xform[0] + rel_y * xform[1]
-        cy = rel_x * xform[3] + rel_y * xform[4]
+        cx = rel_x * xform[0] + rel_y * xform[3]
+        cy = rel_x * xform[1] + rel_y * xform[4]
         center = cx+px, cy+py
 
+        print("edge was {}".format(attachment_edge))
+        print("x_axis was {}".format(x_axis))
+
+        # x_axis = 1, 0
         room.set_transform(x_axis, center)
 
         graph.model = room

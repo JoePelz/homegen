@@ -15,3 +15,6 @@ class Edge:
         x1, y1 = self.start
         x2, y2 = self.end
         return (x1+x2) / 2, (y1+y2) / 2
+
+    def __str__(self):
+        return "Edge(({}, {}) -> ({}, {}))".format(*self.start, *self.end)

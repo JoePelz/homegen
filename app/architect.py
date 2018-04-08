@@ -4,6 +4,7 @@ from app.requirements import Requirements
 from app.requirements_importer import RequirementsImporter
 from app.modeler import Modeler
 from app.rooms import BaseRoom
+from app.blueprint import Blueprint
 
 
 class Architect:
@@ -46,7 +47,6 @@ class Architect:
     @staticmethod
     def models_from_graph(requirements: Requirements, root: Graph) -> List[BaseRoom]:
         """
-
         :param requirements: Requirements object with the constraints to use
         :param root: Graph of nodes with rooms/doorways
         :return: List of rooms and walls with finalized size/shape/position
@@ -58,12 +58,15 @@ class Architect:
         return models
 
     @staticmethod
-    def blueprints_from_models(rooms: list) -> str:
+    def blueprints_from_models(models: List[BaseRoom]) -> str:
         """
-
-
-        :param rooms:
+        :param models:
         :return: path to svg file to view
         """
         print("\n=== Done ===\n")
+        blueprint = Blueprint()
+        for model in models[:2]:
+            blueprint.add_model(model)
+        blueprint.export()
+
         return "/"

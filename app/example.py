@@ -1,8 +1,12 @@
+import os
+import app
 from app.architect import Architect
+
+APP_ROOT = os.path.join(os.path.dirname(app.__file__), os.path.pardir)
 
 
 def test_run():
-    example_path = "../example/home.yaml"
+    example_path = os.path.join(APP_ROOT, 'example', 'home.yaml')
 
     arch = Architect()
     requirements = arch.load_requirements(example_path)

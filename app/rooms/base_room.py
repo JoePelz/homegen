@@ -19,27 +19,24 @@ class BaseRoom:
         x_axis = (1, 0)
         y_axis = (0, 1)
         pos = (0, 0)
-        self.__transform = (0.,)*9  # type: Tuple[float, float, float, float, float, float, float, float, float]
-        self.transform = (*x_axis, pos[0],
-                          *y_axis, pos[1],
-                          0,  0,  1)
+        self.__transform = (0.,)*6  # type: Tuple[float, float, float, float, float, float]
+        self.transform = (*x_axis, *y_axis, pos[0], pos[1])
 
     @property
-    def transform(self) -> Tuple[float, float, float, float, float, float, float, float, float]:
+    def transform(self) -> Tuple[float, float, float, float, float, float]:
         return self.__transform
 
     @transform.setter
-    def transform(self, value: Tuple[float, float, float, float, float, float, float, float, float]) -> None:
-        xx, xy, p1, yx, yy, p2, *_ = value
+    def transform(self, value: Tuple[float, float, float, float, float, float]) -> None:
+        xx, xy, yx, yy, p1, p2 = value
         xlen = (xx**2 + xy**2)**0.5
         ylen = (yx**2 + yy**2)**0.5
         xx /= xlen
         xy /= xlen
         yx /= ylen
         yy /= ylen
-        self.__transform = (xx, xy, p1,
-                          yx, yy, p2,
-                           0,  0,  1)
+        self.__transform = (xx, yx, p1,
+                            xy, yy, p2)
 
     def get_ranges(self) -> Tuple[Tuple[float, float], Tuple[float, float]]:
         return (self.MIN_WIDTH, self.MAX_WIDTH), (self.MIN_DEPTH, self.MAX_DEPTH)
@@ -54,7 +51,7 @@ class BaseRoom:
     def set_transform(self, x_axis: tuple, position: tuple) -> None:
         xx, xy = x_axis
         yx, yy = -xy, xx
-        self.transform = xx, xy, position[0], yx, yy, position[1]
+        self.transform = xx, xy, yx, yy, position[0], position[1]
 
     def get_origin(self) -> Tuple[float, float]:
         # origin = tuple(self.__transform[2:6:3])  # same as below
@@ -101,6 +98,8 @@ class BaseRoom:
             template = self.template,
             width = BaseRoom.nice_feet(self.get_width()),
             height = BaseRoom.nice_feet(self.get_height()),
+            # width = round(self.get_width()),
+            # height = round(self.get_height()),
             area = round(self.square_inches / 144)
         )
         return response
