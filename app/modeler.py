@@ -32,7 +32,6 @@ class Modeler:
         # entrance ("porch"? Not really part of the house)
         graph.model = Modeler.instantiate(graph.contents)
         Modeler.initialize_room(graph.model, width=43, depth=43)
-        print("modeling {}".format(graph.model.report()))
         Modeler.make_rooms(graph.children[0])
 
         all_models = Modeler.list_of_rooms(graph)
@@ -52,6 +51,7 @@ class Modeler:
         depth = random.randint(room.MIN_DEPTH, room.MAX_DEPTH)
         Modeler.initialize_room(room, width, depth)
 
+        print("Attaching {} to {}".format(room.name, graph.parent.model.name))
         room.transform = Modeler.calc_xform(graph.parent.model.transform, attachment_edge).normalize()
 
         graph.model = room
@@ -66,10 +66,9 @@ class Modeler:
         rel_xform = Transform2D((*rel_x, *rel_y, *rel_p))
 
         xform = (parent_xform * rel_xform).normalize()
-        print("calc_xform")
-        print(rel_xform)
-        print(parent_xform)
-        print(xform)
+        # print("parent: {}".format(parent_xform))
+        # print("local:  {}".format(rel_xform))
+        # print("result: {}\n".format(xform))
         return xform
 
     @staticmethod

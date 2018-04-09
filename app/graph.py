@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 import random
 from app.requirements import Requirements
 from app.meta_room import MetaRoom
@@ -7,14 +7,14 @@ from app.rooms.base_room import BaseRoom
 
 
 class Graph:
-    def __init__(self):
+    def __init__(self, parent: 'Graph'=None, children: List['Graph']=None, contents: Union[MetaRoom, MetaWall]=None, model: BaseRoom=None):
         """
         set up some instance variables.
         """
-        self.parent = None  # type: Graph
-        self.children = []  # type: List(Graph)
-        self.contents = None  # type: MetaRoom or MetaWall
-        self.model = None  # type: BaseRoom
+        self.parent = parent  # type: Graph
+        self.children = children or []  # type: List(Graph)
+        self.contents = contents  # type: MetaRoom or MetaWall
+        self.model = model  # type: BaseRoom
 
     def __str__(self) -> str:
         if self.model:

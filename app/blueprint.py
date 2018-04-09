@@ -5,12 +5,12 @@ import svgwrite
 
 
 class Blueprint:
-    def __init__(self, path:str="blueprints.svg"):
+    def __init__(self, path:str="blueprints_bkp.svg"):
         self.path = path  # type: str
         # scale is how many user units per inch
         self.scale = 1.0  # type: float
-        self.dwg = svgwrite.Drawing("blueprints.svg")
-        self.dwg.viewbox(-200, 0, 400, 400)
+        self.dwg = svgwrite.Drawing(self.path)
+        self.dwg.viewbox(-300, -100, 600, 600)
         self.colors = ['blue', 'green', 'red', 'yellow', 'white', 'black']
         self.color_index = 0
 
@@ -19,10 +19,10 @@ class Blueprint:
         matrix = Blueprint.transform_to_svg(model.transform)
         polygon = self.dwg.polygon(points, fill=self.colors[self.color_index % len(self.colors)])
         self.color_index += 1
-        print("model: {}".format(model.report()))
-        print(" X: {:6} {:6}".format(*matrix[0:2]))
-        print(" Y: {:6} {:6}".format(*matrix[2:4]))
-        print(" P: {:6} {:6}".format(*matrix[4:6]))
+        # print("model: {}".format(model.report()))
+        # print(" X: {:6} {:6}".format(*matrix[0:2]))
+        # print(" Y: {:6} {:6}".format(*matrix[2:4]))
+        # print(" P: {:6} {:6}".format(*matrix[4:6]))
         polygon.matrix(*matrix)
         self.dwg.add(polygon)
 

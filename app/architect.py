@@ -60,13 +60,14 @@ class Architect:
         return models
 
     @staticmethod
-    def blueprints_from_models(models: List[BaseRoom]) -> str:
+    def blueprints_from_models(models: List[BaseRoom], name: str="blueprints.svg") -> str:
         """
+        :param name:
         :param models:
         :return: path to svg file to view
         """
         print("\n=== Blueprinting ===\n")
-        blueprint = Blueprint()
+        blueprint = Blueprint(path=name)
         for model in models:
             blueprint.add_model(model)
         blueprint.export()

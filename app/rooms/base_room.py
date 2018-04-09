@@ -26,7 +26,7 @@ class BaseRoom:
         e0 = Edge(-width/2, 0, width/2, 0)
         e1 = Edge(*e0.end, width/2, depth)
         e2 = Edge(*e1.end, -width/2, depth)
-        e3 = Edge(*e2.end, *e1.start)
+        e3 = Edge(*e2.end, *e0.start)
         self.edges = [e0, e1, e2, e3]
 
     def get_attachment_points(self) -> List[Edge]:
