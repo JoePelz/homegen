@@ -7,6 +7,7 @@ from app.requirements import Requirements
 from app.meta_room import MetaRoom
 from app.meta_wall import MetaWall
 from app.edge import Edge
+from app.transform import Transform2D
 
 
 class Modeler:
@@ -51,33 +52,25 @@ class Modeler:
         depth = random.randint(room.MIN_DEPTH, room.MAX_DEPTH)
         Modeler.initialize_room(room, width, depth)
 
-        x_axis = tuple(map(operator.sub, attachment_edge.start, attachment_edge.end))
-
-        xform = graph.parent.model.transform
-        px, py = xform[2], xform[5]
-        rel_x, rel_y = attachment_edge.center
-        cx = rel_x * xform[0] + rel_y * xform[3]
-        cy = rel_x * xform[1] + rel_y * xform[4]
-        center = cx+px, cy+py
-        # room.set_transform(x_axis, center)
-
-        # TODO: test after calc_xform works
-        room.transform = Modeler.calc_xform(graph.parent.model.transform, attachment_edge)
+        room.transform = Modeler.calc_xform(graph.parent.model.transform, attachment_edge).normalize()
 
         graph.model = room
         for child in graph.children:
             Modeler.make_rooms(child)
 
     @staticmethod
-    def calc_xform(parent_xform: Tuple[float, float, float, float, float, float], edge: Edge):
+    def calc_xform(parent_xform: Transform2D, edge: Edge) -> Transform2D:
         rel_x = tuple(map(operator.sub, edge.start, edge.end))
         rel_y = (-rel_x[1], rel_x[0])
         rel_p = edge.center
-        rel_xform = (*rel_x, *rel_y, *rel_p)
-        assert len(rel_xform) == len(parent_xform)
+        rel_xform = Transform2D((*rel_x, *rel_y, *rel_p))
 
-        # TODO: return rel_xform * parent_xform
-        return "???"
+        xform = (parent_xform * rel_xform).normalize()
+        print("calc_xform")
+        print(rel_xform)
+        print(parent_xform)
+        print(xform)
+        return xform
 
     @staticmethod
     def instantiate(metaroom: MetaRoom) -> BaseRoom:

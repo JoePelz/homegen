@@ -1,5 +1,5 @@
-from typing import Tuple
 from app.rooms import BaseRoom
+from app.transform import Transform2D
 import svgwrite
 # https://svgwrite.readthedocs.io/en/master/
 
@@ -31,9 +31,10 @@ class Blueprint:
         self.dwg.save(pretty=True)
 
     @staticmethod
-    def transform_to_svg(transform: Tuple[float, float, float, float, float, float]):
-        index_order = 0, 3, 1, 4, 2, 5
-        return [transform[i] for i in index_order]
+    def transform_to_svg(transform: Transform2D):
+        index_order = 0, 1, 2, 3, 4, 5
+        matrix = [transform.values[i] for i in index_order]
+        return matrix
 
 # Polyline.__init__(points=[], **extra)
 # Parameters:

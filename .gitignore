@@ -98,3 +98,5 @@ ENV/
 # pycharm IDE
 .idea/
 
+.pytest_cache
+*.svg

@@ -1,5 +1,6 @@
 from typing import List, Tuple
 from app.edge import Edge
+from app.transform import Transform2D
 
 
 class BaseRoom:
@@ -16,27 +17,7 @@ class BaseRoom:
         self.name = ""  # type: str
         self.template = 'base'  # type: str
 
-        x_axis = (1, 0)
-        y_axis = (0, 1)
-        pos = (0, 0)
-        self.__transform = (0.,)*6  # type: Tuple[float, float, float, float, float, float]
-        self.transform = (*x_axis, *y_axis, pos[0], pos[1])
-
-    @property
-    def transform(self) -> Tuple[float, float, float, float, float, float]:
-        return self.__transform
-
-    @transform.setter
-    def transform(self, value: Tuple[float, float, float, float, float, float]) -> None:
-        xx, xy, yx, yy, p1, p2 = value
-        xlen = (xx**2 + xy**2)**0.5
-        ylen = (yx**2 + yy**2)**0.5
-        xx /= xlen
-        xy /= xlen
-        yx /= ylen
-        yy /= ylen
-        self.__transform = (xx, yx, p1,
-                            xy, yy, p2)
+        self.transform = Transform2D.identity()  # type: Transform2D
 
     def get_ranges(self) -> Tuple[Tuple[float, float], Tuple[float, float]]:
         return (self.MIN_WIDTH, self.MAX_WIDTH), (self.MIN_DEPTH, self.MAX_DEPTH)
@@ -47,15 +28,6 @@ class BaseRoom:
         e2 = Edge(*e1.end, -width/2, depth)
         e3 = Edge(*e2.end, *e1.start)
         self.edges = [e0, e1, e2, e3]
-
-    def set_transform(self, x_axis: tuple, position: tuple) -> None:
-        xx, xy = x_axis
-        yx, yy = -xy, xx
-        self.transform = xx, xy, yx, yy, position[0], position[1]
-
-    def get_origin(self) -> Tuple[float, float]:
-        # origin = tuple(self.__transform[2:6:3])  # same as below
-        return self.__transform[2], self.__transform[5]
 
     def get_attachment_points(self) -> List[Edge]:
         return self.edges[1:]

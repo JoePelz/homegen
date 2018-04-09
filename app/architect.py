@@ -41,6 +41,8 @@ class Architect:
         print("\n=== Graphing ===\n")
         graph = Graph.build_graph(requirements)
 
+        # graph.children[0].children[0].children = []
+
         Graph.draw_tree(graph, draw_doors=False)
         return graph
 
@@ -53,8 +55,8 @@ class Architect:
         """
         print("\n=== Modeling ===\n")
         models = Modeler.convert_graph(requirements, root)
-        for model in models:
-            print(model.report())
+        # for model in models:
+        #     print(model.report())
         return models
 
     @staticmethod
@@ -63,10 +65,11 @@ class Architect:
         :param models:
         :return: path to svg file to view
         """
-        print("\n=== Done ===\n")
+        print("\n=== Blueprinting ===\n")
         blueprint = Blueprint()
-        for model in models[:3]:
+        for model in models:
             blueprint.add_model(model)
         blueprint.export()
 
+        print("\n=== Done ===\n")
         return "/"
