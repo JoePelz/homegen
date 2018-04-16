@@ -27,9 +27,10 @@ class BaseRoom:
         e2 = Edge(*e1.end, -width/2, depth)
         e3 = Edge(*e2.end, *e0.start)
         self.edges = [e0, e1, e2, e3]
+        e0.mark_used()
 
     def get_attachment_points(self) -> List[Edge]:
-        return self.edges[1:]
+        return [e for e in self.edges if not e.used]
 
     def set_square_inches(self, area: float) -> None:
         self.square_inches = area

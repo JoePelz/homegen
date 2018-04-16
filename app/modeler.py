@@ -10,6 +10,15 @@ from app.edge import Edge
 from app.transform import Transform2D
 
 
+class NoAttachmentPointError(Exception):
+    def __init__(self, node: Graph):
+        self.node = node
+
+
+class InvalidGraphError(Exception):
+    pass
+
+
 class Modeler:
     @staticmethod
     def convert_graph(requirements: Requirements, graph: Graph) -> List[BaseRoom]:
@@ -32,7 +41,13 @@ class Modeler:
         # entrance ("porch"? Not really part of the house)
         graph.model = Modeler.instantiate(graph.contents)
         Modeler.initialize_room(graph.model, width=43, depth=43)
-        Modeler.make_rooms(graph.children[0])
+
+        # Turn all the metarooms into real rooms with sizes, and walls between them.
+        try:
+            Modeler.make_rooms(graph.children[0])
+        except NoAttachmentPointError as e:
+            raise InvalidGraphError('Too many branches from one graph node. (Attempted to connect {} rooms'
+                                    ' to room: "{}")'.format(len(e.node.children) + 1, e.node.contents.name))
 
         all_models = Modeler.list_of_rooms(graph)
         return all_models
@@ -45,7 +60,11 @@ class Modeler:
 
     @staticmethod
     def make_rooms(graph: Graph) -> None:
-        attachment_edge = random.choice(graph.parent.model.get_attachment_points())  # type: Edge
+        attachment_edges = graph.parent.model.get_attachment_points()  # type: List[Edge]
+        if not attachment_edges:
+            raise NoAttachmentPointError(graph)
+        attachment_edge = random.choice(attachment_edges)  # type: Edge
+        attachment_edge.mark_used()
         room = Modeler.instantiate(graph.contents)
         width = random.randint(room.MIN_WIDTH, room.MAX_WIDTH)
         depth = random.randint(room.MIN_DEPTH, room.MAX_DEPTH)
