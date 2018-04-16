@@ -12,7 +12,7 @@ class Blueprint:
         self.scale = 1.0  # type: float
         self.dwg = svgwrite.Drawing(self.path)
         self.dwg.viewbox(-300, -200, 600, 600)
-        self.colors = ['blue', 'green', 'red', 'yellow', 'white']
+        self.colors = ['blue', 'green', 'red', 'yellow', 'brown', 'orange', 'teal', 'pink']
         self.color_index = 0
 
     def add_model(self, model: BaseRoom) -> None:
@@ -26,7 +26,7 @@ class Blueprint:
         self.dwg.save(pretty=True)
 
     def render_room(self, model: BaseRoom) -> None:
-        points = map(lambda m: m.start, model.edges)
+        points = list(map(lambda m: m.start, model.edges))
         matrix = Blueprint.transform_to_svg(model.transform)
         polygon = self.dwg.polygon(
             points,
@@ -41,8 +41,29 @@ class Blueprint:
         # print(" X: {:6} {:6}".format(*matrix[0:2]))
         # print(" Y: {:6} {:6}".format(*matrix[2:4]))
         # print(" P: {:6} {:6}".format(*matrix[4:6]))
+
         polygon.matrix(*matrix)
         self.dwg.add(polygon)
+
+        text_center = (
+            sum(p[0] for p in points) / len(model.edges),
+            sum(p[1] for p in points) / len(model.edges)
+        )
+        text = self.dwg.text(
+            model.name,
+            text_center,
+            fill='white',
+            stroke='black',
+            stroke_width=1,
+            font_family='Verdana',
+            font_weight='bold',
+            font_size='15',
+            alignment_baseline='middle',
+            text_anchor='middle'
+        )
+        # polygon.add(text)
+        text.matrix(*matrix)
+        self.dwg.add(text)
 
     def render_wall(self, model: BaseWall) -> None:
         points = map(lambda m: m.start, model.edges)

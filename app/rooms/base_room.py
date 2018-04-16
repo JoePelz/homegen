@@ -16,7 +16,6 @@ class BaseRoom:
         self.ratio = 0.  # type: float
         self.name = ""  # type: str
         self.template = 'base'  # type: str
-
         self.transform = Transform2D.identity()  # type: Transform2D
 
     def get_ranges(self) -> Tuple[Tuple[float, float], Tuple[float, float]]:
