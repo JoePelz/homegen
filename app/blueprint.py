@@ -2,6 +2,7 @@ from typing import List
 from app.rooms import BaseRoom, BaseWall
 from app.transform import Transform2D
 import svgwrite
+import svgwrite.container
 # https://svgwrite.readthedocs.io/en/master/
 
 
@@ -12,8 +13,36 @@ class Blueprint:
         self.scale = 1.0  # type: float
         self.dwg = svgwrite.Drawing(self.path)
         self.dwg.viewbox(-300, -200, 600, 600)
+        self.dwg.defs.add(self.dwg.style(self.__class__.stylesheet()))
+
         self.colors = ['blue', 'green', 'red', 'yellow', 'brown', 'orange', 'teal', 'pink']
         self.color_index = 0
+
+    @staticmethod
+    def stylesheet() -> str:
+        css = """
+.room {
+  fill-opacity: 0.5;
+  stroke-width: 0.1em;
+  stroke-linejoin: bevel;
+}
+
+.wall {
+  fill: none;
+  stroke: black;
+  stroke-width: 0.1em;
+  stroke-linejoin: bevel;
+}
+
+.label {
+  fill: black;
+  font-family: Courier New;
+  font-weight: bold;
+  font-size: 1.5em;
+  alignment-baseline: middle;
+  text-anchor: middle;
+}"""
+        return css
 
     def add_model(self, model: BaseRoom) -> None:
         if isinstance(model, BaseWall):
@@ -25,25 +54,19 @@ class Blueprint:
         self.dwg.add(self.dwg.circle((0, 0), r=10, fill='white'))
         self.dwg.save(pretty=True)
 
-    def render_room(self, model: BaseRoom) -> None:
+    def render_room(self, model: BaseRoom) -> svgwrite.container.Group:
         points = list(map(lambda m: m.start, model.edges))
         matrix = Blueprint.transform_to_svg(model.transform)
         polygon = self.dwg.polygon(
             points,
+            class_='room',
             fill=self.colors[self.color_index % len(self.colors)],
-            fill_opacity=0.5,
             stroke=self.colors[self.color_index % len(self.colors)],
-            stroke_width=2,
-            stroke_linejoin='bevel'
         )
         self.color_index += 1
-        # print("model: {}".format(model.report()))
-        # print(" X: {:6} {:6}".format(*matrix[0:2]))
-        # print(" Y: {:6} {:6}".format(*matrix[2:4]))
-        # print(" P: {:6} {:6}".format(*matrix[4:6]))
 
-        polygon.matrix(*matrix)
-        self.dwg.add(polygon)
+        group = self.dwg.g()
+        group.matrix(*matrix)
 
         text_center = (
             sum(p[0] for p in points) / len(model.edges),
@@ -52,31 +75,23 @@ class Blueprint:
         text = self.dwg.text(
             model.name,
             text_center,
-            fill='white',
-            stroke='black',
-            stroke_width=1,
-            font_family='Consolas',
-            font_weight='bold',
-            font_size='15',
-            alignment_baseline='middle',
-            text_anchor='middle'
+            class_='label'
         )
-        # polygon.add(text)
-        text.matrix(*matrix)
-        self.dwg.add(text)
+        group.add(polygon)
+        group.add(text)
+        return group
 
-    def render_wall(self, model: BaseWall) -> None:
+    def render_wall(self, model: BaseWall) -> svgwrite.container.Group:
         points = map(lambda m: m.start, model.edges)
-        matrix = Blueprint.transform_to_svg(model.transform)
+        matrix = self.__class__.transform_to_svg(model.transform)
         polygon = self.dwg.polygon(
             points,
-            fill='none',
-            stroke='black',
-            stroke_width=2,
-            stroke_linejoin='bevel'
+            class_='wall',
         )
-        polygon.matrix(*matrix)
-        self.dwg.add(polygon)
+        group = self.dwg.g()
+        group.matrix(*matrix)
+        group.add(polygon)
+        return group
 
     @staticmethod
     def transform_to_svg(transform: Transform2D) -> List[float]:
