@@ -2,7 +2,7 @@ from typing import List
 from app.graph import Graph
 from app.requirements import Requirements
 from app.requirements_importer import RequirementsImporter
-from app.modeler import Modeler
+from app.modeler import Modeler, InvalidGraphError
 from app.rooms import BaseRoom
 from app.blueprint import Blueprint
 
@@ -52,6 +52,7 @@ class Architect:
         :param requirements: Requirements object with the constraints to use
         :param root: Graph of nodes with rooms/doorways
         :return: List of rooms and walls with finalized size/shape/position
+        :raises InvalidGraphError: If the graph cannot be instantiated into rooms.
         """
         print("\n=== Modeling ===\n")
         models = Modeler.convert_graph(requirements, root)

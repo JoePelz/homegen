@@ -10,6 +10,9 @@ class Edge:
         self.start = (x1, y1)  # type: Tuple[float, float]
         self.end = (x2, y2)  # type: Tuple[float, float]
 
+        # This edge has things on both sides of it.
+        self.used = False  # type: bool
+
     @property
     def center(self) -> Tuple[float, float]:
         x1, y1 = self.start
@@ -18,3 +21,6 @@ class Edge:
 
     def __str__(self):
         return "Edge(({}, {}) -> ({}, {}))".format(*self.start, *self.end)
+
+    def mark_used(self):
+        self.used = True

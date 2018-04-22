@@ -55,7 +55,7 @@ class Blueprint:
             fill='white',
             stroke='black',
             stroke_width=1,
-            font_family='Verdana',
+            font_family='Consolas',
             font_weight='bold',
             font_size='15',
             alignment_baseline='middle',

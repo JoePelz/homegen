@@ -1,3 +1,5 @@
+from typing import List
+from app.edge import Edge
 from app.rooms.base_room import BaseRoom
 
 

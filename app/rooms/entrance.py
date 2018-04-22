@@ -15,4 +15,7 @@ class Entrance(BaseWall):
 
     def get_attachment_points(self) -> List[Edge]:
         # return self.edges[1:2]
-        return self.edges[2:3]
+        if self.edges[2].used:
+            return []
+        else:
+            return [self.edges[2]]
