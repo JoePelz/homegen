@@ -53,7 +53,20 @@ class Blueprint:
 
     def export(self) -> None:
         self.dwg.add(self.dwg.circle((0, 0), r=10, fill='white'))
+        self.resize_viewbox()
         self.dwg.save(pretty=True)
+
+    def resize_viewbox(self, margin: float=30) -> None:
+        # traverse
+        min_x = -250
+        max_x = 250
+        min_y = 0
+        max_y = 500
+        self.dwg.viewbox(
+            min_x - margin,
+            min_y - margin,
+            (max_x - min_x) + 2 * margin,
+            (max_y - min_y) + 2 * margin)
 
     def group(self, *elements: List[svgwrite.container.BaseElement], matrix: Transform2D=None, room_id: str=''):
         if room_id:
@@ -68,7 +81,6 @@ class Blueprint:
 
     def render_room(self, model: BaseRoom) -> svgwrite.container.Group:
         points = list(map(lambda m: m.start, model.edges))
-        matrix = Blueprint.transform_to_svg(model.transform)
         polygon = self.dwg.polygon(
             points,
             class_='room',
