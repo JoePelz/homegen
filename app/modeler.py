@@ -47,7 +47,7 @@ class Modeler:
             Modeler.make_rooms(graph.children[0])
         except NoAttachmentPointError as e:
             raise InvalidGraphError('Too many branches from one graph node. (Attempted to connect {} rooms'
-                                    ' to room: "{}")'.format(len(e.node.children) + 1, e.node.contents.name))
+                                    ' to room: "{}")'.format(len(e.node.children) + 1, e.node.contents.name)) from e
 
         all_models = Modeler.list_of_rooms(graph)
         return all_models
