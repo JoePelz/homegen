@@ -46,9 +46,10 @@ class Blueprint:
 
     def add_model(self, model: BaseRoom) -> None:
         if isinstance(model, BaseWall):
-            self.render_wall(model)
+            element = self.render_wall(model)
         else:
-            self.render_room(model)
+            element = self.render_room(model)
+        self.dwg.add(element)
 
     def export(self) -> None:
         self.dwg.add(self.dwg.circle((0, 0), r=10, fill='white'))
