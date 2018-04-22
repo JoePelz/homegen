@@ -1,17 +1,20 @@
 import operator
 import random
-from typing import List, Tuple
+from typing import List
 from app.rooms import *
 from app.graph import Graph
 from app.requirements import Requirements
 from app.meta_room import MetaRoom
-from app.meta_wall import MetaWall
 from app.edge import Edge
 from app.transform import Transform2D
 
 
 class NoAttachmentPointError(Exception):
-    def __init__(self, node: Graph):
+    def __init__(self, node: Graph, message: str=''):
+        if message:
+            super().__init__(message)
+        else:
+            super().__init__()
         self.node = node
 
 
@@ -20,8 +23,8 @@ class InvalidGraphError(Exception):
 
 
 class Modeler:
-    @staticmethod
-    def convert_graph(requirements: Requirements, graph: Graph) -> List[BaseRoom]:
+    @classmethod
+    def convert_graph(cls, requirements: Requirements, graph: Graph) -> List[BaseRoom]:
         """
         Convert Requirements and a graph of rooms into a set of room models
         with sizes and positions.
@@ -39,17 +42,17 @@ class Modeler:
         # - Wrap entire house with exterior walls
 
         # entrance ("porch"? Not really part of the house)
-        graph.model = Modeler.instantiate(graph.contents)
-        Modeler.initialize_room(graph.model, width=43, depth=43)
+        graph.model = cls.instantiate(graph.contents)
+        cls.initialize_room(graph.model, width=43, depth=43)
 
-        # Turn all the metarooms into real rooms with sizes, and walls between them.
+        # Turn all the meta-rooms into real rooms with sizes, and walls between them.
         try:
-            Modeler.make_rooms(graph.children[0])
+            cls.make_rooms(graph.children[0])
         except NoAttachmentPointError as e:
-            raise InvalidGraphError('Too many branches from one graph node. (Attempted to connect {} rooms'
-                                    ' to room: "{}")'.format(len(e.node.children) + 1, e.node.contents.name)) from e
+            raise InvalidGraphError('Too many branches from one graph node. (Attempted to connect {} rooms '
+                                    'to room: "{}")'.format(len(e.node.parent.children) + 1, e.node.parent.model.name)) from e
 
-        all_models = Modeler.list_of_rooms(graph)
+        all_models = cls.list_of_rooms(graph)
         return all_models
 
     @staticmethod
@@ -58,24 +61,24 @@ class Modeler:
         room.set_square_inches(width * depth)
         room.set_ratio(width / depth)
 
-    @staticmethod
-    def make_rooms(graph: Graph) -> None:
+    @classmethod
+    def make_rooms(cls, graph: Graph) -> None:
         attachment_edges = graph.parent.model.get_attachment_points()  # type: List[Edge]
         if not attachment_edges:
-            raise NoAttachmentPointError(graph)
+            raise NoAttachmentPointError(graph, "No available space on room {} to place new door.".format(graph.parent.model.name))
         attachment_edge = random.choice(attachment_edges)  # type: Edge
         attachment_edge.mark_used()
-        room = Modeler.instantiate(graph.contents)
+        room = cls.instantiate(graph.contents)
         width = random.randint(room.MIN_WIDTH, room.MAX_WIDTH)
         depth = random.randint(room.MIN_DEPTH, room.MAX_DEPTH)
-        Modeler.initialize_room(room, width, depth)
+        cls.initialize_room(room, width, depth)
 
         print("Attaching {} to {}".format(room.name, graph.parent.model.name))
-        room.transform = Modeler.calc_xform(graph.parent.model.transform, attachment_edge).normalize()
+        room.transform = cls.calc_xform(graph.parent.model.transform, attachment_edge).normalize()
 
         graph.model = room
         for child in graph.children:
-            Modeler.make_rooms(child)
+            cls.make_rooms(child)
 
     @staticmethod
     def calc_xform(parent_xform: Transform2D, edge: Edge) -> Transform2D:
@@ -85,9 +88,6 @@ class Modeler:
         rel_xform = Transform2D((*rel_x, *rel_y, *rel_p))
 
         xform = (parent_xform * rel_xform).normalize()
-        # print("parent: {}".format(parent_xform))
-        # print("local:  {}".format(rel_xform))
-        # print("result: {}\n".format(xform))
         return xform
 
     @staticmethod
@@ -107,13 +107,14 @@ class Modeler:
         else:
             room = BaseRoom()
         room.name = metaroom.name
+        room.id = metaroom.id
         return room
 
-    @staticmethod
-    def list_of_rooms(graph: Graph) -> List[BaseRoom]:
+    @classmethod
+    def list_of_rooms(cls, graph: Graph) -> List[BaseRoom]:
         rooms = []
         if graph.model:
             rooms.append(graph.model)
         for child in graph.children:
-            rooms.extend(Modeler.list_of_rooms(child))
+            rooms.extend(cls.list_of_rooms(child))
         return rooms

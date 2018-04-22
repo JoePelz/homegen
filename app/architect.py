@@ -1,8 +1,10 @@
+import traceback
 from typing import List
 from app.graph import Graph
 from app.requirements import Requirements
 from app.requirements_importer import RequirementsImporter
 from app.modeler import Modeler, InvalidGraphError
+from app.meta_room import MetaRoom
 from app.rooms import BaseRoom
 from app.blueprint import Blueprint
 
@@ -39,6 +41,7 @@ class Architect:
         """
 
         print("\n=== Graphing ===\n")
+        MetaRoom.reset_ids()
         graph = Graph.build_graph(requirements)
 
         # graph.children[0].children[0].children = []
@@ -55,9 +58,11 @@ class Architect:
         :raises InvalidGraphError: If the graph cannot be instantiated into rooms.
         """
         print("\n=== Modeling ===\n")
-        models = Modeler.convert_graph(requirements, root)
-        # for model in models:
-        #     print(model.report())
+        try:
+            models = Modeler.convert_graph(requirements, root)
+        except:
+            traceback.print_exc()
+            models = Modeler.list_of_rooms(root)
         return models
 
     @staticmethod

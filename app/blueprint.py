@@ -55,6 +55,17 @@ class Blueprint:
         self.dwg.add(self.dwg.circle((0, 0), r=10, fill='white'))
         self.dwg.save(pretty=True)
 
+    def group(self, *elements: List[svgwrite.container.BaseElement], matrix: Transform2D=None, room_id: str=''):
+        if room_id:
+            group = self.dwg.g(id=room_id)
+        else:
+            group = self.dwg.g()
+        if matrix:
+            group.matrix(*self.__class__.transform_to_svg(matrix))
+        for element in elements:
+            group.add(element)
+        return group
+
     def render_room(self, model: BaseRoom) -> svgwrite.container.Group:
         points = list(map(lambda m: m.start, model.edges))
         matrix = Blueprint.transform_to_svg(model.transform)
@@ -66,9 +77,6 @@ class Blueprint:
         )
         self.color_index += 1
 
-        group = self.dwg.g()
-        group.matrix(*matrix)
-
         text_center = (
             sum(p[0] for p in points) / len(model.edges),
             sum(p[1] for p in points) / len(model.edges)
@@ -78,9 +86,7 @@ class Blueprint:
             text_center,
             class_='label'
         )
-        group.add(polygon)
-        group.add(text)
-        return group
+        return self.group(polygon, text, room_id=model.id, matrix=model.transform)
 
     def render_wall(self, model: BaseWall) -> svgwrite.container.Group:
         points = map(lambda m: m.start, model.edges)
@@ -89,10 +95,7 @@ class Blueprint:
             points,
             class_='wall',
         )
-        group = self.dwg.g()
-        group.matrix(*matrix)
-        group.add(polygon)
-        return group
+        return self.group(polygon, room_id=model.id, matrix=model.transform)
 
     @staticmethod
     def transform_to_svg(transform: Transform2D) -> List[float]:

@@ -15,6 +15,7 @@ class BaseRoom:
         self.square_inches = 0.  # type: float
         self.ratio = 0.  # type: float
         self.name = ""  # type: str
+        self.id = ""  # type: str
         self.template = 'base'  # type: str
         self.transform = Transform2D.identity()  # type: Transform2D
 
