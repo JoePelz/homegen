@@ -1,2 +1,6 @@
+from app import rooms
+
+
 class BaseConstraint:
-    pass
+    def apply(self, room: rooms.BaseRoom):
+        raise NotImplementedError()

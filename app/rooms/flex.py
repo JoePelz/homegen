@@ -1,12 +1,15 @@
+from typing import List
 from app.rooms.base_room import BaseRoom
+from app import constraints
 
 
 class Flex(BaseRoom):
-    MIN_WIDTH = 72
-    MIN_DEPTH = 72
-
-    MAX_WIDTH = 150
-    MAX_DEPTH = 150
+    @classmethod
+    def default_constraints(cls) -> List["BaseConstraint"]:
+        rules = [
+            constraints.InitialSize(min_depth=72, max_depth=150, min_width=72, max_width=150),
+        ]
+        return rules
 
     def __init__(self):
         super().__init__()

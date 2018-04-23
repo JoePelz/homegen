@@ -1,6 +1,7 @@
 from typing import List, Tuple
 from app.edge import Edge
 from app.transform import Transform2D
+# from app.constraints import BaseConstraint
 
 
 class BaseRoom:
@@ -8,6 +9,10 @@ class BaseRoom:
     MIN_DEPTH = 24
     MAX_WIDTH = 300
     MAX_DEPTH = 300
+
+    @classmethod
+    def default_constraints(cls) -> List["BaseConstraint"]:
+        return []
 
     def __init__(self):
         self.edges = []  # type: List[Edge]
@@ -18,6 +23,11 @@ class BaseRoom:
         self.id = ""  # type: str
         self.template = 'base'  # type: str
         self.transform = Transform2D.identity()  # type: Transform2D
+
+        map(self.apply_constraint, self.__class__.default_constraints())
+
+    def apply_constraint(self, constraint: "BaseConstraint"):
+        constraint.apply(self)
 
     def get_ranges(self) -> Tuple[Tuple[float, float], Tuple[float, float]]:
         return (self.MIN_WIDTH, self.MAX_WIDTH), (self.MIN_DEPTH, self.MAX_DEPTH)

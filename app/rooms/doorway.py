@@ -1,9 +1,15 @@
+from typing import List
 from app.rooms.base_wall import BaseWall
+from app import constraints
 
 
 class Doorway(BaseWall):
-    MIN_WIDTH = 43
-    MAX_WIDTH = 43
+    @classmethod
+    def default_constraints(cls) -> List["BaseConstraint"]:
+        rules = [
+            constraints.InitialSize(min_width=43, max_width=43),
+        ]
+        return rules
 
     def __init__(self):
         super().__init__()

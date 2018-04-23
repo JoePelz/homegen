@@ -1,13 +1,16 @@
 from typing import List
 from app.rooms.base_room import BaseRoom
 from app.edge import Edge
+from app import constraints
 
 
 class BaseWall(BaseRoom):
-    MIN_DEPTH = 5
-    MAX_DEPTH = 5
-
-    MIN_WIDTH = 5
+    @classmethod
+    def default_constraints(cls) -> List["BaseConstraint"]:
+        rules = [
+            constraints.InitialSize(min_depth=5, max_depth=5, min_width=5),
+        ]
+        return rules
 
     def __init__(self):
         super().__init__()

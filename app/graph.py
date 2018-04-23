@@ -46,6 +46,8 @@ class Graph:
             # do not pick walls that already open into rooms
             if isinstance(suggestion.contents, MetaWall) and len(suggestion.children) > 0:
                 continue
+            if len(suggestion.children) >= suggestion.contents.:
+                continue
             choice = suggestion
         return choice
 
@@ -88,6 +90,8 @@ class Graph:
     @staticmethod
     def build_graph(requirements: Requirements) -> 'Graph':
         rooms = Graph.list_all_rooms(requirements)
+        dead_ends = [r for r in rooms if r.]
+        other rooms =
         random.shuffle(rooms)
         root = Graph.make_root()
         nodes = []
