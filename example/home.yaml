@@ -29,3 +29,5 @@ home:
       template: flex
     - name: Patio
       template: flex
+      constraints:
+        - deadend

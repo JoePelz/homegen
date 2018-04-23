@@ -68,6 +68,8 @@ class Modeler:
             raise NoAttachmentPointError(graph, "No available space on room {} to place new door.".format(graph.parent.model.name))
         attachment_edge = random.choice(attachment_edges)  # type: Edge
         attachment_edge.mark_used()
+        # TODO: the room model needs the constraints carried over from the metaroom.
+        # This includes template constraints as well as yaml-specified constraints.
         room = cls.instantiate(graph.contents)
         width = random.randint(room.MIN_WIDTH, room.MAX_WIDTH)
         depth = random.randint(room.MIN_DEPTH, room.MAX_DEPTH)

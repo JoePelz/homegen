@@ -8,9 +8,6 @@ from app.rooms.base_room import BaseRoom
 
 class Graph:
     def __init__(self, parent: 'Graph'=None, children: List['Graph']=None, contents: Union[MetaRoom, MetaWall]=None, model: BaseRoom=None):
-        """
-        set up some instance variables.
-        """
         self.parent = parent  # type: Graph
         self.children = children or []  # type: List(Graph)
         self.contents = contents  # type: MetaRoom or MetaWall
@@ -26,11 +23,6 @@ class Graph:
 
     @staticmethod
     def list_all_rooms(requirements: Requirements) -> List[MetaRoom ]:
-        """
-
-        :param requirements:
-        :return:
-        """
         all_rooms = []
         for req in requirements.rooms:
             for i in range(1, random.randint(req.min_count, req.max_count) + 1):
@@ -39,12 +31,31 @@ class Graph:
 
     @staticmethod
     def pick_node_to_grow(nodelist: List['Graph']) -> 'Graph':
-        size = len(nodelist)
+        cropped_nodelist = []
+        for n in nodelist:
+            if isinstance(n.contents, MetaWall) and len(n.children) > 0:
+                # do not pick walls that already open into rooms
+                continue
+            if 'deadend' in n.contents.constraints:
+                continue
+            if len(n.children) >= 3:
+                # 1 entrance plus 3 additional exits (4 doorways total)
+                # suggest that all 4 walls are full and no more space is available.
+                continue
+            cropped_nodelist.append(n)
+
         choice = None
+        size = len(cropped_nodelist)
         while choice is None:
-            suggestion = nodelist[random.randint(0, size - 1)]
-            # do not pick walls that already open into rooms
+            suggestion = cropped_nodelist[random.randint(0, size - 1)]
             if isinstance(suggestion.contents, MetaWall) and len(suggestion.children) > 0:
+                # do not pick walls that already open into rooms
+                continue
+            if 'deadend' in suggestion.contents.constraints:
+                continue
+            if len(suggestion.children) >= 3:
+                # an entrance and 3 additional exits (4 doorways total)
+                # suggest that all 4 walls are full and no more space is available.
                 continue
             choice = suggestion
         return choice
