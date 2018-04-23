@@ -4,9 +4,9 @@ from app import constraints
 
 
 class Flex(BaseRoom):
-    @classmethod
-    def default_constraints(cls) -> List["BaseConstraint"]:
+    def default_constraints(self) -> List["BaseConstraint"]:
         rules = [
+            *BaseRoom.default_constraints(self),
             constraints.InitialSize(min_depth=72, max_depth=150, min_width=72, max_width=150),
         ]
         return rules

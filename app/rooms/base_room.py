@@ -10,8 +10,7 @@ class BaseRoom:
     MAX_WIDTH = 300
     MAX_DEPTH = 300
 
-    @classmethod
-    def default_constraints(cls) -> List["BaseConstraint"]:
+    def default_constraints(self) -> List["BaseConstraint"]:
         return []
 
     def __init__(self):
@@ -24,10 +23,16 @@ class BaseRoom:
         self.template = 'base'  # type: str
         self.transform = Transform2D.identity()  # type: Transform2D
 
-        map(self.apply_constraint, self.__class__.default_constraints())
+        for constraint in self.default_constraints():
+            self.apply_constraint(constraint)
 
     def apply_constraint(self, constraint: "BaseConstraint"):
+        # print("before: ({})".format(self.name))
+        # print("  {}".format(self.get_ranges()))
         constraint.apply(self)
+        # print("after: ")
+        # print("  {}".format(self.get_ranges()))
+        # print("---")
 
     def get_ranges(self) -> Tuple[Tuple[float, float], Tuple[float, float]]:
         return (self.MIN_WIDTH, self.MAX_WIDTH), (self.MIN_DEPTH, self.MAX_DEPTH)

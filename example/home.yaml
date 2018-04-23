@@ -1,3 +1,7 @@
+# legal templates:
+#   hallway, flex, closet
+# legal constraints:
+#   deadend
 ---
 home:
   rooms:
@@ -7,10 +11,16 @@ home:
       template: hallway
     - name: Closet1
       template: closet
+      constraints:
+        - deadend
     - name: Closet2
       template: closet
+      constraints:
+        - deadend
     - name: Bathroom
       template: flex
+      constraints:
+        - deadend
     - name: Kitchen
       template: flex
     - name: Flex

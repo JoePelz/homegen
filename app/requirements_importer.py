@@ -45,7 +45,8 @@ class RequirementsImporter:
             name = room.get('name', 'Room')
             min_count = int(room.get('min_count', 1))
             max_count = int(room.get('max_count', 1))
-            mr = MetaRoom(template, name, min_count, max_count)
+            constraints = room.get('constraints')
+            mr = MetaRoom(template, name, min_count, max_count, constraints)
             requirements.add_room(mr)
 
         return requirements

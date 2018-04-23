@@ -46,8 +46,6 @@ class Graph:
             # do not pick walls that already open into rooms
             if isinstance(suggestion.contents, MetaWall) and len(suggestion.children) > 0:
                 continue
-            if len(suggestion.children) >= suggestion.contents.:
-                continue
             choice = suggestion
         return choice
 
@@ -90,16 +88,18 @@ class Graph:
     @staticmethod
     def build_graph(requirements: Requirements) -> 'Graph':
         rooms = Graph.list_all_rooms(requirements)
-        dead_ends = [r for r in rooms if r.]
-        other rooms =
-        random.shuffle(rooms)
+        dead_ends = [r for r in rooms if 'deadend' in r.constraints]
+        non_dead_ends = [r for r in rooms if 'deadend' not in r.constraints]
+        random.shuffle(dead_ends)
+        random.shuffle(non_dead_ends)
         root = Graph.make_root()
         nodes = []
 
-        # this order and excluding root from nodes prevents additional
-        # rooms from attaching to the Entrance.
         attachment_point = root
-        for room in rooms:
+        for room in non_dead_ends:
+            Graph.attach_room_to_node(room, attachment_point, nodes)
+            attachment_point = Graph.pick_node_to_grow(nodes)
+        for room in dead_ends:
             Graph.attach_room_to_node(room, attachment_point, nodes)
             attachment_point = Graph.pick_node_to_grow(nodes)
 

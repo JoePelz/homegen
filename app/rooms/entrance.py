@@ -5,9 +5,9 @@ from app import constraints
 
 
 class Entrance(BaseWall):
-    @classmethod
-    def default_constraints(cls) -> List["BaseConstraint"]:
+    def default_constraints(self) -> List["BaseConstraint"]:
         rules = [
+            *BaseWall.default_constraints(self),
             constraints.InitialSize(min_depth=43, max_depth=43, min_width=43, max_width=43),
         ]
         return rules

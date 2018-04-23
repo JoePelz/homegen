@@ -4,9 +4,9 @@ from app import constraints
 
 
 class Closet(BaseRoom):
-    @classmethod
-    def default_constraints(cls) -> List["BaseConstraint"]:
+    def default_constraints(self) -> List["BaseConstraint"]:
         rules = [
+            *BaseRoom.default_constraints(self),
             constraints.InitialSize(min_depth=24, max_depth=36, min_width=36, max_width=60),
             constraints.DeadEnd(),
         ]
