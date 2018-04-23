@@ -7,7 +7,7 @@ import svgwrite.container
 
 
 class Blueprint:
-    def __init__(self, path:str="blueprints_bkp.svg"):
+    def __init__(self, path:str="blueprints.svg"):
         self.path = path  # type: str
         # scale is how many user units per inch
         self.scale = 1.0  # type: float
@@ -58,6 +58,8 @@ class Blueprint:
 
     def resize_viewbox(self, margin: float=30) -> None:
         # traverse
+        tree = self.dwg.get_xml()
+
         min_x = -250
         max_x = 250
         min_y = 0
