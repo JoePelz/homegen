@@ -59,16 +59,51 @@ class Blueprint:
     def resize_viewbox(self, margin: float=30) -> None:
         # traverse
         tree = self.dwg.get_xml()
-
-        min_x = -250
-        max_x = 250
+        points = self.__class__.recursive_point_collector(tree)
+        min_x = 0
+        max_x = 0
         min_y = 0
-        max_y = 500
+        max_y = 0
+        for x, y in points:
+            if x < min_x:
+                min_x = x
+            elif x > max_x:
+                max_x = x
+            if y < min_y:
+                min_y = y
+            elif y > max_y:
+                max_y = y
+
         self.dwg.viewbox(
             min_x - margin,
             min_y - margin,
             (max_x - min_x) + 2 * margin,
             (max_y - min_y) + 2 * margin)
+
+    @classmethod
+    def recursive_point_collector(cls, node):
+        # points from children
+        # add points from local
+        # multiply by local transform
+        # return all points.
+        child_points = []
+        for child in node.getchildren():
+            if child.tag in ['g', 'polygon']:
+                child_points.extend(cls.recursive_point_collector(child))
+        if node.get('points'):
+            local_points = [tuple(map(float, p.split(','))) for p in node.get('points').split(' ')]
+        else:
+            local_points = []
+
+        points = child_points + local_points
+
+        if node.get('transform'):
+            local_transform = Transform2D(tuple(map(float, node.get('transform').strip("matrix()").split(","))))
+        else:
+            local_transform = Transform2D.identity()
+
+        points = [local_transform.multiply_point(p) for p in points]
+        return points
 
     def group(self, *elements: List[svgwrite.container.BaseElement], matrix: Transform2D=None, room_id: str=''):
         if room_id:
@@ -113,6 +148,8 @@ class Blueprint:
 
     @staticmethod
     def transform_to_svg(transform: Transform2D) -> List[float]:
+        # This was made when I had Transform2D in another order,
+        # but is now basically a noop getting the values.
         index_order = 0, 1, 2, 3, 4, 5
         matrix = [transform.values[i] for i in index_order]
         return matrix

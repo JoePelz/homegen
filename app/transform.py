@@ -15,6 +15,13 @@ class Transform2D:
         out = (xx, xy, yx, yy, self.values[4], self.values[5])
         return Transform2D(out)
 
+    def multiply_point(self, other: Tuple[float, float]):
+        a, b = other
+        xx, xy, yx, yy, px, py = self.values
+        x = a*xx + b*yx + px
+        y = a*xy + b*yy + py
+        return x, y
+
     def __mul__(self, other: 'Transform2D') -> 'Transform2D':
         if isinstance(other, Transform2D):
             a = self.values
