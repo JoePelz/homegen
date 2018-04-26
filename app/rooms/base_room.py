@@ -1,18 +1,9 @@
 from typing import List, Tuple
 from app.edge import Edge
 from app.transform import Transform2D
-# from app.constraints import BaseConstraint
 
 
 class BaseRoom:
-    MIN_WIDTH = 24
-    MIN_DEPTH = 24
-    MAX_WIDTH = 300
-    MAX_DEPTH = 300
-
-    def default_constraints(self) -> List["BaseConstraint"]:
-        return []
-
     def __init__(self):
         self.edges = []  # type: List[Edge]
         self.base_edge = 0  # type: int

@@ -1,6 +1,7 @@
 import yaml
 from app.meta_room import MetaRoom
 from app.requirements import Requirements
+from app.templates import Templates
 
 
 class InvalidRequirements (Exception):
@@ -41,13 +42,11 @@ class RequirementsImporter:
 
         yaml_rooms = root['home']['rooms']
         for room in yaml_rooms:
-            template = room.get('template', 'BaseRoom').lower()
+            template = room.get('template', 'base_room').lower()
             name = room.get('name', 'Room')
             min_count = int(room.get('min_count', 1))
             max_count = int(room.get('max_count', 1))
-            constraints = room.get('constraints')
-            # TODO: constraints here should reflect defaults constraints from the template
-            #   as well as constraints from the yaml file.
+            constraints = Templates.get_template_constraints(template)  + room.get('constraints')
             mr = MetaRoom(template, name, min_count, max_count, constraints)
             requirements.add_room(mr)
 

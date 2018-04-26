@@ -1,0 +1,69 @@
+---
+base_room:
+  constraints:
+    - type: initial_size
+      attributes:
+        min_width: 24
+        max_width: 300
+        min_depth: 24
+        max_depth: 300
+
+closet:
+  parent: base_room
+  constraints:
+    - type: initial_size
+      attributes:
+        min_depth: 24
+        max_depth: 36
+        min_width: 36
+        max_width: 60
+    - type: dead_end
+
+hallway:
+  parent: base_room
+  constraints:
+    - type: initial_size
+      attributes:
+        min_depth: 43
+        max_depth: 360
+        min_width: 43
+        max_width: 43
+
+flex:
+  parent: base_room
+  constraints:
+    - type: initial_size
+      attributes:
+        min_depth: 72
+        max_depth: 150
+        min_width: 72
+        max_width: 150
+
+
+base_wall:
+  parent: base_room
+  constraints:
+    - type: initial_size
+      attributes:
+        min_depth: 5
+        max_depth: 5
+        min_width: 5
+    - type: straight_passage
+
+doorway:
+  parent: base_wall
+  constraints:
+    - type: initial_size
+      attributes:
+        min_width: 43
+        max_width: 43
+
+entrance:
+  parent: base_wall
+  constraints:
+    - type: initial_size
+      attributes:
+        min_width: 43
+        max_width: 43
+        min_depth: 43
+        max_depth: 43
