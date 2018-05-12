@@ -3,20 +3,29 @@
 
 ## Methods
 
-* Room-first
+* ~Room-first~
     1. Generate rooms
     1. Stick them together
     1. Reshape rooms to fill in gaps
-* Floor-first
+* ~Floor-first~
     1. Generate house shell
     1. Draw walls in house to mark off spaces as rooms
-* Movement graph
+* ~Movement graph~
     1. Given a starting point (entrance door)
     1. generate a branching graph of rooms.
         * branching is based on room type
         * bedroom would probably be a leaf
         * hallways would have many branches
     1. Grow house from door inward
+* Graph and Grid
+    1. Given a starting point
+    1. Build a graph of the paths a person could take through the house. i.e. which rooms connect to which others.
+    1. Draw a convex hull around the house
+        1. Make wall. Mark as exterior wall.
+        1. Problem: entrance may not be on the convex hull
+    1. crop overlapping rooms to belong to the room closest to their entrance door
+    1. grow rooms to fill convex hull. Put walls at meeting places between rooms
+    1. simplify walls (less zigzagging and fewer small walls).
 
 
 ## Components
@@ -60,20 +69,11 @@
 * brick wall
 * fireplace
 
-
 ## Program Structure
 
 Version 1 is a single 2D floor.
 
-Easy way would be to align everything to a square-foot grid, 
-but would only allow for boring floor plans, and walls 
-wouldn't have thickness.  Not good enough for this project.
-
-If I need to consider the 2D layout of a space is it useful 
-to start with a graph?
-
-What about the graph edges and vertices both being things?
-
+Will be following the graph & grid approach
 ```
 Example:
 - Door (key-locking, metal, external)
@@ -92,39 +92,11 @@ Example:
        \- Patio
 ```
 
-### Idea! 
+### Idea
 Create a Domain Specific Language, like in a yaml file, that lets 
 1. you specify 
     * rooms: names, occurrences (number/range), constraints (size/shape) 
     * specify any other constraints, like overall square footage
-    * version 2: define styles as well (colors, materials, molding)
+    * define styles as well (colors, materials, molding)
 2. Then in the app you load that definition file, and click "Generate"
-    * `Generate` builds a graph of flow
-    * then builds placeholder rooms with independent constraints satisfied
-    * determines dependant constraints like shared walls
-    * attempts iteratively to resolve all constraints
-        * should weight the room's constraint's importances? hard/soft constraints?
-    * render to svg
 3. The app returns or saves the svg file. 
-
-### Models
-* House
-    * is a collection of polygons
-* Room
-    * is a polygon
-    * shares some edges with other rooms
-        * but maybe not the whole edge. (rooms shares part of hallway's edge)
-* Architect
-    * .generate_blueprints
-        * no args
-        * returns house
-* Renderer 
-    * https://svgwrite.readthedocs.io/en/master/
-    * .render_to_svg
-        * accepts house
-        * accepts path
-        * writes to file
-        * returns none
-
-
-This is the bottom line.
