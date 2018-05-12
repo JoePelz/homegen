@@ -8,6 +8,7 @@ from app.graph import Graph
 from app import rooms
 from app.transform import Transform2D
 from app.blueprint import Blueprint
+from app import constraints
 
 APP_ROOT = os.path.join(os.path.dirname(app.__file__), os.path.pardir)
 
@@ -19,7 +20,7 @@ def get_sample_requirements():
         MetaRoom(template='hallway', name='Side Hallway', min_count=1, max_count=1),
         MetaRoom(template='closet', name='Closet1', min_count=1, max_count=1),
         MetaRoom(template='closet', name='Closet2', min_count=1, max_count=1),
-        MetaRoom(template='flex', name='Bathroom', min_count=1, max_count=1),
+        MetaRoom(template='bathroom', name='Bathroom', min_count=1, max_count=1),
         MetaRoom(template='flex', name='Kitchen', min_count=1, max_count=1),
         MetaRoom(template='flex', name='Flex', min_count=1, max_count=1),
         MetaRoom(template='flex', name='Bedroom', min_count=1, max_count=1),
@@ -51,7 +52,7 @@ def get_sample_graph():
     bathroom_door = Graph(parent=hallway, contents=MetaWall(template='doorway', name='Bathroom Door'))
     hallway.children.append(bathroom_door)
 
-    bathroom = Graph(parent=bathroom_door, contents=MetaRoom(template='flex', name='Bathroom'))
+    bathroom = Graph(parent=bathroom_door, contents=MetaRoom(template='bathroom', name='Bathroom'))
     bathroom_door.children.append(bathroom)
 
     return root
@@ -67,36 +68,48 @@ def get_sample_models():
     #    id = ""  # type: str
     #    template = 'base'  # type: str
     #    transform = Transform2D.identity()  # type: Transform2D
-    entrance = rooms.Entrance()
+    wall = constraints.Wall()
+    passage = constraints.StraightPassage()
+    dead_end = constraints.DeadEnd()
+
+    entrance = rooms.BaseRoom()
+    entrance.apply_constraint(wall)
+    entrance.apply_constraint(dead_end)
     entrance.set_box(43, 43); entrance.set_square_inches(1849); entrance.set_ratio(1.0)
     entrance.name = 'Entrance'; entrance.id = 'entrance'
 
-    hallway_door = rooms.Doorway()
+    hallway_door = rooms.BaseRoom()
+    hallway_door.apply_constraint(wall)
+    hallway_door.apply_constraint(passage)
     hallway_door.set_box(43, 5); hallway_door.set_square_inches(215); hallway_door.set_ratio(8.6)
     hallway_door.name = 'Main Hallway Door'; hallway_door.id = 'main_hallway_door'
     hallway_door.transform = Transform2D((1, 0, 0, 1, 0, 43))
 
-    hallway = rooms.Hallway()
+    hallway = rooms.BaseRoom()
     hallway.set_box(43, 133); hallway.set_square_inches(5719); hallway.set_ratio(0.3233)
     hallway.name = 'Main Hallway'; hallway.id = 'main_hallway'
     hallway.transform = Transform2D((1, 0, 0, 1, 0, 48))
 
-    closet_door = rooms.Doorway()
+    closet_door = rooms.BaseRoom()
+    closet_door.apply_constraint(wall)
+    closet_door.apply_constraint(passage)
     closet_door.set_box(43, 5); closet_door.set_square_inches(215); closet_door.set_ratio(8.6)
     closet_door.name = 'Closet Door'; closet_door.id = 'closet_door'
     closet_door.transform = Transform2D((0, -1, 1, 0, 21.5, 114.5))
 
-    closet = rooms.Closet()
+    closet = rooms.BaseRoom()
     closet.set_box(47, 25); closet.set_square_inches(1175); closet.set_ratio(1.88)
     closet.name = 'Closet'; closet.id = 'closet'
     closet.transform = Transform2D((0, -1, 1, 0, 26.5, 114.5))
 
-    bathroom_door = rooms.Doorway()
+    bathroom_door = rooms.BaseRoom()
+    bathroom_door.apply_constraint(wall)
+    bathroom_door.apply_constraint(passage)
     bathroom_door.set_box(47, 5); bathroom_door.set_square_inches(1175); bathroom_door.set_ratio(8.6)
     bathroom_door.name = 'Bathroom Door'; bathroom_door.id = 'bathroom_door'
     bathroom_door.transform = Transform2D((1, 0, 0, 1, 0, 181))
 
-    bathroom = rooms.Flex()
+    bathroom = rooms.BaseRoom()
     bathroom.set_box(137, 98); bathroom.set_square_inches(13426); bathroom.set_ratio(1.398)
     bathroom.name = 'Bathroom'; bathroom.id = 'bathroom'
     bathroom.transform = Transform2D((1, 0, 0, 1, 0, 186))

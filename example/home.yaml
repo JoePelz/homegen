@@ -18,7 +18,7 @@ home:
       constraints:
         - type: dead_end
     - name: Bathroom
-      template: flex
+      template: bathroom
       constraints:
       - type: initial_size
         attributes:
