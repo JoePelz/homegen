@@ -1,24 +1,39 @@
 from typing import List
 import re
+from app import rooms
+from app import constraints
+from app import templates
 
 
 class MetaRoom:
     __room_ids = {}
 
-    def __init__(self, template: str, name: str, min_count: int=1, max_count: int=1, constraints: List[str]=None):
+    def __init__(self, template: str, name: str, min_count: int=1, max_count: int=1, constraints: List[constraints.BaseConstraint]=None):
         self.template = template  # type: str
-        self.constraints = constraints or []  # type: List[str]
+        self.constraints = templates.Templates.get_template_constraints(self.template) + (constraints or [])  # type: List[constraints.BaseConstraint]
         self.name = name  # type: str
         self.id = self.get_id(name)
         self.min_count = min_count  # type: int
         self.max_count = max_count  # type: int
+        self.dead_end = False
+
+        for constraint in self.constraints:
+            constraint.apply_to_meta_room(self)
+
+    def instantiate(self) -> rooms.BaseRoom:
+        room = rooms.BaseRoom()
+        for constraint in self.constraints:
+            room.apply_constraint(constraint)
+        room.name = self.name
+        room.id = self.id
+        return room
 
     @classmethod
     def reset_ids(cls):
         cls.__room_ids = {}
 
     @classmethod
-    def get_id(cls, name):
+    def get_id(cls, name: str) -> str:
         lower_name = name.lower()
         id_name = re.sub('[^\w]+', '_', lower_name)
         room_id = id_name

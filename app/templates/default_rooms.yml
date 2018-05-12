@@ -8,6 +8,15 @@ base_room:
         min_depth: 24
         max_depth: 300
 
+bathroom:
+  parent: base_room
+  constraints:
+    - type: initial_size
+      attributes:
+        min_depth: 72
+        min_width: 72
+    - type: dead_end
+
 closet:
   parent: base_room
   constraints:
@@ -39,10 +48,12 @@ flex:
         min_width: 72
         max_width: 150
 
+# =====================================
 
 base_wall:
   parent: base_room
   constraints:
+    - type: wall
     - type: initial_size
       attributes:
         min_depth: 5

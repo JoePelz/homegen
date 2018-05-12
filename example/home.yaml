@@ -1,7 +1,7 @@
 # legal templates:
 #   hallway, flex, closet
 # legal constraints:
-#   deadend
+#   dead_end
 ---
 home:
   rooms:
@@ -12,15 +12,13 @@ home:
     - name: Closet1
       template: closet
       constraints:
-        - deadend
+        - type: dead_end
     - name: Closet2
       template: closet
       constraints:
-        - deadend
+        - type: dead_end
     - name: Bathroom
       template: flex
-      constraints:
-        - deadend
     - name: Kitchen
       template: flex
     - name: Flex
@@ -30,4 +28,4 @@ home:
     - name: Patio
       template: flex
       constraints:
-        - deadend
+        - type: dead_end

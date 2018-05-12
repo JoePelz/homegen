@@ -1,5 +1,5 @@
 from typing import List
-from app.rooms import BaseRoom, BaseWall
+from app.rooms import BaseRoom
 from app.transform import Transform2D
 import svgwrite
 import svgwrite.container
@@ -45,7 +45,7 @@ class Blueprint:
         return css
 
     def add_model(self, model: BaseRoom) -> None:
-        if isinstance(model, BaseWall):
+        if model.is_a_wall():
             element = self.render_wall(model)
         else:
             element = self.render_room(model)
@@ -137,7 +137,7 @@ class Blueprint:
         )
         return self.group(polygon, text, room_id=model.id, matrix=model.transform)
 
-    def render_wall(self, model: BaseWall) -> svgwrite.container.Group:
+    def render_wall(self, model) -> svgwrite.container.Group:
         points = map(lambda m: m.start, model.edges)
         matrix = self.__class__.transform_to_svg(model.transform)
         polygon = self.dwg.polygon(

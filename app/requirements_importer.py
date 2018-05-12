@@ -1,7 +1,9 @@
+from typing import List, Dict
 import yaml
 from app.meta_room import MetaRoom
 from app.requirements import Requirements
 from app.templates import Templates
+from app import constraints
 
 
 class InvalidRequirements (Exception):
@@ -32,7 +34,15 @@ class RequirementsImporter:
         return True
 
     @staticmethod
-    def parse(root: dict) -> Requirements:
+    def import_constraint(raw: Dict) -> constraints.BaseConstraint:
+        type = raw['type']
+        instance = None
+        if type in constraints.mapping:
+            instance = constraints.mapping[type](**raw.get('attributes', {}))
+        return instance
+
+    @classmethod
+    def parse(cls, root: dict) -> Requirements:
         """
         Take a yaml dict and parse it into meta_rooms and meta_constraints.
         :param root: The yaml dict object
@@ -46,8 +56,8 @@ class RequirementsImporter:
             name = room.get('name', 'Room')
             min_count = int(room.get('min_count', 1))
             max_count = int(room.get('max_count', 1))
-            constraints = Templates.get_template_constraints(template)  + room.get('constraints')
-            mr = MetaRoom(template, name, min_count, max_count, constraints)
+            imported_constraints = [cnst for cnst in map(cls.import_constraint, room.get('constraints', [])) if cnst]
+            mr = MetaRoom(template, name, min_count, max_count, imported_constraints)
             requirements.add_room(mr)
 
         return requirements

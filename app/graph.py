@@ -22,7 +22,7 @@ class Graph:
             return 'empty'
 
     @staticmethod
-    def list_all_rooms(requirements: Requirements) -> List[MetaRoom ]:
+    def list_all_rooms(requirements: Requirements) -> List[MetaRoom]:
         all_rooms = []
         for req in requirements.rooms:
             for i in range(1, random.randint(req.min_count, req.max_count) + 1):
@@ -36,7 +36,7 @@ class Graph:
             if isinstance(n.contents, MetaWall) and len(n.children) > 0:
                 # do not pick walls that already open into rooms
                 continue
-            if 'deadend' in n.contents.constraints:
+            if 'dead_end' in n.contents.constraints:
                 continue
             if len(n.children) >= 3:
                 # 1 entrance plus 3 additional exits (4 doorways total)
@@ -51,7 +51,7 @@ class Graph:
             if isinstance(suggestion.contents, MetaWall) and len(suggestion.children) > 0:
                 # do not pick walls that already open into rooms
                 continue
-            if 'deadend' in suggestion.contents.constraints:
+            if 'dead_end' in suggestion.contents.constraints:
                 continue
             if len(suggestion.children) >= 3:
                 # an entrance and 3 additional exits (4 doorways total)
@@ -99,8 +99,8 @@ class Graph:
     @staticmethod
     def build_graph(requirements: Requirements) -> 'Graph':
         rooms = Graph.list_all_rooms(requirements)
-        dead_ends = [r for r in rooms if 'deadend' in r.constraints]
-        non_dead_ends = [r for r in rooms if 'deadend' not in r.constraints]
+        dead_ends = [r for r in rooms if r.dead_end]
+        non_dead_ends = [r for r in rooms if not r.dead_end]
         random.shuffle(dead_ends)
         random.shuffle(non_dead_ends)
         root = Graph.make_root()

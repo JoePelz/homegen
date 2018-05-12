@@ -5,6 +5,6 @@ if TYPE_CHECKING:
     from app import rooms
 
 
-class StraightPassage(constraints.BaseConstraint):
+class Wall(constraints.BaseConstraint):
     def apply_to_room(self, room: "rooms.BaseRoom"):
-        room.get_attachment_points = lambda: [room.edges[2]]
+        room.wall = True

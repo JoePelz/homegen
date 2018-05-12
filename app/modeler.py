@@ -42,7 +42,7 @@ class Modeler:
         # - Wrap entire house with exterior walls
 
         # entrance ("porch"? Not really part of the house)
-        graph.model = cls.instantiate(graph.contents)
+        graph.model = graph.contents.instantiate()
         cls.initialize_room(graph.model, width=43, depth=43)
 
         # Turn all the meta-rooms into real rooms with sizes, and walls between them.
@@ -68,11 +68,10 @@ class Modeler:
             raise NoAttachmentPointError(graph, "No available space on room {} to place new door.".format(graph.parent.model.name))
         attachment_edge = random.choice(attachment_edges)  # type: Edge
         attachment_edge.mark_used()
-        # TODO: the room model needs the constraints carried over from the metaroom.
-        # This includes template constraints as well as yaml-specified constraints.
-        room = cls.instantiate(graph.contents)
-        width = random.randint(room.MIN_WIDTH, room.MAX_WIDTH)
-        depth = random.randint(room.MIN_DEPTH, room.MAX_DEPTH)
+        room = graph.contents.instantiate()
+        width_range, height_range = room.get_ranges()
+        width = random.randint(*width_range)
+        depth = random.randint(*height_range)
         cls.initialize_room(room, width, depth)
 
         print("Attaching {} to {}".format(room.name, graph.parent.model.name))
@@ -91,26 +90,6 @@ class Modeler:
 
         xform = (parent_xform * rel_xform).normalize()
         return xform
-
-    @staticmethod
-    def instantiate(metaroom: MetaRoom) -> BaseRoom:
-        if metaroom.template == 'closet':
-            room = Closet()
-        elif metaroom.template == 'flex':
-            room = Flex()
-        elif metaroom.template == 'hallway':
-            room = Hallway()
-        elif metaroom.template == 'doorway':
-            room = Doorway()
-        elif metaroom.template == 'wall':
-            room = BaseWall()
-        elif metaroom.template == 'entrance':
-            room = Entrance()
-        else:
-            room = BaseRoom()
-        room.name = metaroom.name
-        room.id = metaroom.id
-        return room
 
     @classmethod
     def list_of_rooms(cls, graph: Graph) -> List[BaseRoom]:
