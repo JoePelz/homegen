@@ -5,9 +5,9 @@
 ---
 home:
   rooms:
-    - name: Main Hallway
+    - name: Hallway
       template: hallway
-    - name: Side Hallway
+    - name: Hallway
       template: hallway
     - name: Closet1
       template: closet
@@ -19,8 +19,18 @@ home:
         - type: dead_end
     - name: Bathroom
       template: flex
+      constraints:
+      - type: initial_size
+        attributes:
+          max_depth: 150
+          max_width: 150
     - name: Kitchen
       template: flex
+      constraints:
+      - type: initial_size
+        attributes:
+          min_depth: 150
+          min_width: 150
     - name: Flex
       template: flex
     - name: Bedroom

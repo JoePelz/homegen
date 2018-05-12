@@ -10,3 +10,6 @@ class BaseConstraint:
 
     def apply_to_meta_room(self, room: "meta_room.MetaRoom"):
         pass
+
+    def __str__(self):
+        return "Base Constraint"

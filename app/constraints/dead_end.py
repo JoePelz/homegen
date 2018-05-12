@@ -13,3 +13,6 @@ class DeadEnd(constraints.BaseConstraint):
 
     def apply_to_meta_room(self, room: "meta_room.MetaRoom"):
         room.dead_end = True
+
+    def __str__(self):
+        return "Dead end room"

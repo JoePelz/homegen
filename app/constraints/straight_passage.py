@@ -8,3 +8,6 @@ if TYPE_CHECKING:
 class StraightPassage(constraints.BaseConstraint):
     def apply_to_room(self, room: "rooms.BaseRoom"):
         room.get_attachment_points = lambda: [room.edges[2]]
+
+    def __str__(self):
+        return "Pass straight through only"

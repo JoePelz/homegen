@@ -36,7 +36,7 @@ class Graph:
             if isinstance(n.contents, MetaWall) and len(n.children) > 0:
                 # do not pick walls that already open into rooms
                 continue
-            if 'dead_end' in n.contents.constraints:
+            if n.contents.dead_end:
                 continue
             if len(n.children) >= 3:
                 # 1 entrance plus 3 additional exits (4 doorways total)

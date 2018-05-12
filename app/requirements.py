@@ -22,3 +22,6 @@ class Requirements:
                 print("  {}({}) x{}".format(room.name, room.template, room.min_count))
             else:
                 print("  {}({}) x{}-{}".format(room.name, room.template, room.min_count, room.max_count))
+
+            for constraint in room.constraints:
+                print("    {}".format(constraint))
